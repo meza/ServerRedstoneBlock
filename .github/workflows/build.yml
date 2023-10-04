@@ -15,7 +15,7 @@ permissions:
 env:
     MC_VERSION: 1.20.1
   # release type is release when branch is main, alpha when branch is alpha and beta when branch is beta
-    RELEASE_TYPE: ${{ github.ref_name == 'MC$MC_VERSION' && 'release' || startsWith(github.ref_name, 'alpha-') && 'alpha' || startsWith(github.ref_name, 'beta-') && 'beta' }}
+    RELEASE_TYPE: ${{ startsWith(github.ref_name, 'MC') && endsWith(github.ref_name, env.MC_VERSION) && 'release' || startsWith(github.ref_name, 'alpha-') && 'alpha' || startsWith(github.ref_name, 'beta-') && 'beta' }}
 
 jobs:
   build:
@@ -116,7 +116,7 @@ jobs:
             fabric
             quilt
           game-versions: |
-            $MC_VERSION
+            ${{ env.MC_VERSION }}
           java: |
             17
           dependencies: |
@@ -138,7 +138,7 @@ jobs:
           loaders: |
             forge
           game-versions: |
-            $MC_VERSION
+            ${{ env.MC_VERSION }}
           java: |
             17
           game-version-filter: releases

@@ -11,7 +11,7 @@
       "prerelease": true
     }
   ],
-  "tagFormat": "v${version}-MC1.20",
+  "tagFormat": "v${version}-MC1.20.1",
   "plugins": [
     [
       "@semantic-release/commit-analyzer",

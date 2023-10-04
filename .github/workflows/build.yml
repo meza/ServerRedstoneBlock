@@ -99,15 +99,14 @@ jobs:
         if: ${{ matrix.java == '17' && runner.os == 'Linux' && (steps.get-next-version.outputs.new-release-published == 'true') }}
         with:
           version-type: beta
+          name: ServerRedstoneBlock for ${{ env.MC_VERSION }} Fabric v${{ needs.get-next-version.outputs.new-release-version }}
           version: ${{ needs.get-next-version.outputs.new-release-version }}
           modrinth-id: ${{ vars.MODRINTH_ID }}
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
           curseforge-id: ${{ vars.CURSEFORGE_ID }}
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
           changelog-file: CHANGELOG.*
-          files: |
-            fabric/build/libs/!(*-@(dev|sources|javadoc|shadow)).jar
-            fabric/build/libs/*-@(dev|sources|javadoc|shadow).jar
+          files: fabric/build/libs/!(*-@(dev|sources|all|shadow)).jar
           loaders: |
             fabric
             quilt
@@ -125,14 +124,13 @@ jobs:
         with:
           version-type: beta
           version: ${{ needs.get-next-version.outputs.new-release-version }}
+          name: ServerRedstoneBlock for ${{ env.MC_VERSION }} Forge v${{ needs.get-next-version.outputs.new-release-version }}
           modrinth-id: ${{ vars.MODRINTH_ID }}
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
           curseforge-id: ${{ vars.CURSEFORGE_ID }}
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
           changelog-file: CHANGELOG.*
-          files: |
-            forge/build/libs/!(*-@(dev|sources|javadoc|shadow)).jar
-            forge/build/libs/*-@(dev|sources|javadoc|shadow).jar
+          files: forge/build/libs/!(*-@(dev|sources|all|shadow)).jar
           loaders: |
             forge
           game-versions: |

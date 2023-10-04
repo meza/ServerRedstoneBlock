@@ -4,7 +4,7 @@
   "version": "${version}",
 
   "name": "ServerRedstoneBlock",
-  "description": "",
+  "description": "Server controlled redstone block. Never again will you have to worry about redstone contraptions breaking due to server restarts!",
   "authors": [],
   "contact": {},
 

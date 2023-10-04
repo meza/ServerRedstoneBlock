@@ -106,6 +106,7 @@ jobs:
         with:
           version-type: ${{ env.RELEASE_TYPE }}
           version: ${{ needs.get-next-version.outputs.new-release-version }}
+          name: ${{ needs.get-next-version.outputs.new-release-version }}-Fabric
           modrinth-id: ${{ vars.MODRINTH_ID }}
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
           curseforge-id: ${{ vars.CURSEFORGE_ID }}
@@ -129,6 +130,7 @@ jobs:
         with:
           version-type: ${{ env.RELEASE_TYPE }}
           version: ${{ needs.get-next-version.outputs.new-release-version }}
+          name: ${{ needs.get-next-version.outputs.new-release-version }}-Forge
           modrinth-id: ${{ vars.MODRINTH_ID }}
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
           curseforge-id: ${{ vars.CURSEFORGE_ID }}

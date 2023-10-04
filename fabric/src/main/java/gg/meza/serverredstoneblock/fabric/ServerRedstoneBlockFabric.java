@@ -6,6 +6,7 @@ import gg.meza.serverredstoneblock.ServerRedstoneBlock;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.loader.api.FabricLoader;
@@ -19,6 +20,7 @@ import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.world.WorldEvents;
 
 import java.util.Map;
 
@@ -53,5 +55,7 @@ public class ServerRedstoneBlockFabric implements ModInitializer {
             ServerRedstoneBlock.onServerStarted(server, "fabric", FabricLoaderImpl.VERSION);
         });
         ServerLifecycleEvents.SERVER_STOPPING.register(ServerRedstoneBlock::onServerStopping);
+
+        ServerTickEvents.START_WORLD_TICK.register(ServerRedstoneBlock::onServerTick);
     }
 }

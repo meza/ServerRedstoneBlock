@@ -1,12 +1,14 @@
 package gg.meza.serverredstoneblock;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.PersistentState;
+import net.minecraft.world.PersistentStateManager;
+import net.minecraft.world.World;
 
 import java.util.UUID;
 
-public class WorldInfoSaveData extends SavedData {
-
+public class WorldInfoSaveData extends PersistentState {
     public String worldId = UUID.randomUUID().toString();
     private boolean dirty = false;
 
@@ -16,10 +18,16 @@ public class WorldInfoSaveData extends SavedData {
         return data;
     }
 
-    public static WorldInfoSaveData load(CompoundTag tag) {
+    public static WorldInfoSaveData load(NbtCompound tag) {
         WorldInfoSaveData data = create();
         data.worldId = tag.getString("worldId");
         return data;
+    }
+
+    @Override
+    public NbtCompound writeNbt(NbtCompound nbt) {
+        nbt.putString("worldId", worldId);
+        return nbt;
     }
 
     @Override
@@ -31,10 +39,11 @@ public class WorldInfoSaveData extends SavedData {
         dirty = true;
     }
 
+    public static String getWorldId(MinecraftServer server) {
+        PersistentStateManager persistentStateManager = server.getWorld(World.OVERWORLD).getPersistentStateManager();
+        WorldInfoSaveData state = persistentStateManager.method_17924(WorldInfoSaveData::load, WorldInfoSaveData::create, "serverredstoneblock");
+        state.markDirty();
 
-    @Override
-    public CompoundTag save(CompoundTag compoundTag) {
-        compoundTag.putString("worldId", worldId);
-        return compoundTag;
+        return state.worldId;
     }
 }

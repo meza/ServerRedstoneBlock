@@ -1,71 +1,85 @@
 package gg.meza.serverredstoneblock;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.block.*;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityTicker;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.sound.BlockSoundGroup;
+import net.minecraft.state.StateManager;
+import net.minecraft.state.property.EnumProperty;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.world.BlockView;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
+import org.jetbrains.annotations.Nullable;
 
 import static gg.meza.serverredstoneblock.ServerRedstoneBlock.analytics;
-import static gg.meza.serverredstoneblock.ServerRedstoneBlock.redstoneBlockEntityType;
 
-public class RedstoneBlock extends BaseEntityBlock {
-    public static final EnumProperty<ServerPowerState> POWER_STATE = EnumProperty.create("power_state", ServerPowerState.class);
+public class RedstoneBlock extends BlockWithEntity {
+    public static final EnumProperty<ServerPowerState> POWER_STATE = EnumProperty.of("power_state", ServerPowerState.class);
     public static ServerPowerState powerState = ServerPowerState.ON;
 
-    public RedstoneBlock(Properties properties) {
-        super(properties);
+    public static final Settings blockProps = Settings.create()
+            .mapColor(MapColor.RED)
+            .requiresTool()
+            .strength(5.0F, 6.0F)
+            .sounds(BlockSoundGroup.METAL);
+
+    public RedstoneBlock() {
+        super(blockProps);
+        setDefaultState(getDefaultState().with(POWER_STATE, ServerPowerState.ON));
+    }
+
+    public BlockRenderType getRenderType(BlockState state) {
+        return BlockRenderType.MODEL;
+    }
+
+    @Nullable
+    @Override
+    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+        return new RedstoneBlockEntity(pos, state);
+    }
+
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
+        if (type == ServerRedstoneBlock.redstoneBlockEntityType) {
+            return (BlockEntityTicker<T>) RedstoneBlockEntity::tick;
+        }
+
+        return null;
     }
 
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
-        return blockEntityType == redstoneBlockEntityType ? RedstoneBlockEntity::tick : null;
-    }
-
-    @Override
-    public RenderShape getRenderShape(BlockState blockState) {
-        return RenderShape.MODEL;
-    }
-
-    @Override
-    public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-        return new RedstoneBlockEntity(blockPos, blockState);
-    }
-
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         builder.add(POWER_STATE);
     }
 
     @Override
-    public boolean isSignalSource(BlockState state) {
+    public boolean emitsRedstonePower(BlockState state) {
         return true;
     }
 
     @Override
-    public int getSignal(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, Direction direction) {
+    public int getWeakRedstonePower(BlockState state, BlockView world, BlockPos pos, Direction direction) {
         return powerState.getValue();
     }
 
     @Override
-    public void playerDestroy(Level level, Player player, BlockPos blockPos, BlockState blockState, BlockEntity blockEntity, ItemStack itemStack) {
-        super.playerDestroy(level, player, blockPos, blockState, blockEntity, itemStack);
-        analytics.redstoneBlockRemoved();
+    public void onBroken(WorldAccess world, BlockPos pos, BlockState state) {
+        if(!world.isClient()) {
+            analytics.redstoneBlockBroken();
+        }
     }
 
     @Override
-    public void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
-        super.onPlace(blockState, level, blockPos, blockState2, bl);
-        analytics.redstoneBlockPlacedEvent();
+    public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
+        if(!world.isClient()) {
+            analytics.redstoneBlockPlaced();
+        }
     }
 
     private void switchTo(ServerPowerState state) {

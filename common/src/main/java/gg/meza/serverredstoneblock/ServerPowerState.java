@@ -1,8 +1,8 @@
 package gg.meza.serverredstoneblock;
 
-import net.minecraft.util.StringRepresentable;
+import net.minecraft.util.StringIdentifiable;
 
-public enum ServerPowerState implements StringRepresentable {
+public enum ServerPowerState implements StringIdentifiable {
     OFF(0),
     ON(15),
     WARNING(7);
@@ -14,7 +14,7 @@ public enum ServerPowerState implements StringRepresentable {
     }
 
     @Override
-    public String getSerializedName() {
+    public String asString() {
         return switch (this) {
             case OFF -> "off";
             case ON -> "on";

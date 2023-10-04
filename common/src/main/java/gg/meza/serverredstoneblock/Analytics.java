@@ -17,7 +17,6 @@ public class Analytics {
     private String worldId;
 
     public Analytics() {
-//        this.posthog = new PostHog.Builder(POSTHOG_API_KEY).host(POSTHOG_HOST).build();
     }
 
     private void sendEvent(String event) {
@@ -61,11 +60,11 @@ public class Analytics {
     public void serverStartedEvent() {
         sendEvent("Server Started");
     }
-    public void redstoneBlockPlacedEvent() {
+    public void redstoneBlockPlaced() {
         sendEvent("Server Redstone Block Placed");
     }
-    public void redstoneBlockRemoved() {
-        sendEvent("Server Redstone Block Removed");
+    public void redstoneBlockBroken() {
+        sendEvent("Server Redstone Block Broken");
     }
     public void redstoneToggled(ServerPowerState state) {
         sendEvent("Server Redstone Block Toggled", new NameValuePair[]{new BasicNameValuePair("state", state.toString())});

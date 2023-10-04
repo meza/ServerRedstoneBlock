@@ -7,9 +7,10 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 
+import static gg.meza.serverredstoneblock.ServerRedstoneBlock.VERSION;
+
 public class Analytics {
-    //    private static final String POSTHOG_API_KEY = "POSTHOG_API_KEY_REPL";
-    private static final String POSTHOG_API_KEY = "phc_gydkp9wcXJnWaxxGx1W30VP0f9KYAXQS8YqEOvjrTKj";
+    private static final String POSTHOG_API_KEY = "POSTHOG_API_KEY_REPL";
     private static final String POSTHOG_HOST = "https://eu.posthog.com";
     private final String OS_NAME = System.getProperty("os.name");
     private String MC_VERSION;
@@ -40,6 +41,7 @@ public class Analytics {
             data += "\"Minecraft Version\": \"" + MC_VERSION + "\",";
             data += "\"Minecraft Loader\": \"" + loader + "\",";
             data += "\"Minecraft Loader Version\": \"" + loaderVersion + "\",";
+            data += "\"Mod Version\": \"" + VERSION + "\",";
             data += "\"OS\": \"" + OS_NAME + "\",";
             data += "\"Local Time\": \"" + new java.util.Date().toString() + "\",";
             data += "\"Java Version\": \"" + JAVA_VERSION + "\"";

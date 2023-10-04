@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import static net.minecraft.server.command.CommandManager.literal;
 
 public class ServerRedstoneBlock {
+    public static final String VERSION = "VERSION_REPL";
     public static final String blockName = "server_redstone_block";
     public static final String MOD_ID = "serverredstoneblock";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);

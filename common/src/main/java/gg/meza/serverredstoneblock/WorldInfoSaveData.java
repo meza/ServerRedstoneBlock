@@ -41,7 +41,7 @@ public class WorldInfoSaveData extends PersistentState {
 
     public static String getWorldId(MinecraftServer server) {
         PersistentStateManager persistentStateManager = server.getWorld(World.OVERWORLD).getPersistentStateManager();
-        WorldInfoSaveData state = persistentStateManager.method_17924(WorldInfoSaveData::load, WorldInfoSaveData::create, "serverredstoneblock");
+        WorldInfoSaveData state = persistentStateManager.getOrCreate(WorldInfoSaveData::load, WorldInfoSaveData::create, "serverredstoneblock");
         state.markDirty();
 
         return state.worldId;

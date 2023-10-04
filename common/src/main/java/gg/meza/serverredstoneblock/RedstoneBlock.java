@@ -22,7 +22,7 @@ public class RedstoneBlock extends BlockWithEntity {
     public static final EnumProperty<ServerPowerState> POWER_STATE = EnumProperty.of("power_state", ServerPowerState.class);
     public static ServerPowerState powerState = ServerPowerState.ON;
 
-    public static final Settings blockProps = Settings.create()
+    public static final Settings blockProps = Settings.of(Material.METAL)
             .mapColor(MapColor.RED)
             .requiresTool()
             .strength(5.0F, 6.0F)

@@ -15,6 +15,7 @@ public class Analytics {
     private String MC_VERSION;
     private final String JAVA_VERSION = System.getProperty("java.version");
     private String worldId;
+    private int craftedCount = 0;
 
     public Analytics() {
     }
@@ -63,7 +64,7 @@ public class Analytics {
     }
 
     public void redstoneBlockCrafted() {
-        sendEvent("Server Redstone Block Crafted");
+        craftedCount++;
     }
 
     public void redstoneBlockPlaced() {
@@ -76,5 +77,9 @@ public class Analytics {
 
     public void redstoneToggled(ServerPowerState state) {
         sendEvent("Server Redstone Block Toggled", new NameValuePair[]{new BasicNameValuePair("state", state.toString())});
+    }
+
+    public void flush() {
+        sendEvent("Server Redstone Block Crafted", new NameValuePair[]{new BasicNameValuePair("count", String.valueOf(craftedCount))});
     }
 }

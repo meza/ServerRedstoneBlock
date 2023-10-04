@@ -44,5 +44,6 @@ public class ServerRedstoneBlockFabric implements ModInitializer {
             );
         });
         ServerLifecycleEvents.SERVER_STARTED.register(ServerRedstoneBlock::onServerStarted);
+        ServerLifecycleEvents.SERVER_STOPPING.register(ServerRedstoneBlock::onServerStopping);
     }
 }

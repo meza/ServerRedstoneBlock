@@ -3,6 +3,7 @@ package gg.meza.serverredstoneblock.forge;
 import gg.meza.serverredstoneblock.ServerRedstoneBlock;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
+import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -13,6 +14,11 @@ public class EventListener {
     @SubscribeEvent
     public static void onServerStarted(ServerStartedEvent server) {
         ServerRedstoneBlock.onServerStarted(server.getServer());
+    }
+
+    @SubscribeEvent
+    public static void onServerStopping(ServerStoppingEvent server) {
+        ServerRedstoneBlock.onServerStopping(server.getServer());
     }
 
     @SubscribeEvent

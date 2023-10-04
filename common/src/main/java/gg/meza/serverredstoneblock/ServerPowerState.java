@@ -5,7 +5,7 @@ import net.minecraft.util.StringIdentifiable;
 public enum ServerPowerState implements StringIdentifiable {
     OFF(0),
     ON(15),
-    WARNING(7);
+    WARNING(1);
 
     private final int value;
 

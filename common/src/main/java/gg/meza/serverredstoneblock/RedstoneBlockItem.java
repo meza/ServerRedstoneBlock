@@ -20,7 +20,9 @@ public class RedstoneBlockItem extends BlockItem {
 
     @Override
     public void onCraft(ItemStack stack, World world, PlayerEntity player) {
-        analytics.redstoneBlockCrafted();
+        if (!world.isClient()) {
+            analytics.redstoneBlockCrafted();
+        }
     }
 
     @Override

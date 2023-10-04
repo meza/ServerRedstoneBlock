@@ -60,4 +60,9 @@ public class ServerRedstoneBlock {
         analytics.setWorldId(worldId);
         analytics.serverStartedEvent();
     }
+
+    public static void onServerStopping(MinecraftServer server) {
+        block.off();
+        analytics.flush();
+    }
 }

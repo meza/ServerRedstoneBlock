@@ -5,10 +5,11 @@
 
 ## Update files:
 
-- gradle.properties
-- .releaserc.json
-- fabric/src/main/resources/fabric.mod.json
-- forge/src/main/resources/META-INF/mods.toml
-- forge/src/main/resources/pack.mcmeta
+- gradle.properties - update all the things
+- .releaserc.json - update mc version
+- .github/workflows/build.yml - update mc version
+- fabric/src/main/resources/fabric.mod.json - update loader/mc version
+- forge/src/main/resources/META-INF/mods.toml - update loader/mc version
+- forge/src/main/resources/pack.mcmeta - update pack version
 
 

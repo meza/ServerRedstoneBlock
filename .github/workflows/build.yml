@@ -107,8 +107,8 @@ jobs:
           version: ${{ needs.get-next-version.outputs.new-release-version }}
           modrinth-id: ${{ vars.MODRINTH_ID }}
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
-#          curseforge-id: ${{ vars.CURSEFORGE_ID }}
-#          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+          curseforge-id: ${{ vars.CURSEFORGE_ID }}
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
           changelog-file: CHANGELOG.*
           files: fabric/build/libs/!(*-@(dev|sources|all|shadow)).jar
           loaders: |
@@ -130,8 +130,8 @@ jobs:
           version: ${{ needs.get-next-version.outputs.new-release-version }}
           modrinth-id: ${{ vars.MODRINTH_ID }}
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
-          #          curseforge-id: ${{ vars.CURSEFORGE_ID }}
-          #          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+          curseforge-id: ${{ vars.CURSEFORGE_ID }}
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
           changelog-file: CHANGELOG.*
           files: forge/build/libs/!(*-@(dev|sources|all|shadow)).jar
           loaders: |

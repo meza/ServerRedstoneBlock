@@ -5,6 +5,7 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.util.Identifier;
+import net.minecraft.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,8 +23,9 @@ public class ServerRedstoneBlock {
     public static BlockEntityType<RedstoneBlockEntity> redstoneBlockEntityType;
 
     public static final String COMMAND_BASE = "srs";
-
     public static Analytics analytics = new Analytics();
+    private static int tick = 0;
+    private static int MINUTE_IN_TICKS = 1200;
 
     public static void setEntityType(BlockEntityType<RedstoneBlockEntity> entityType) {
         redstoneBlockEntityType = entityType;
@@ -65,5 +67,12 @@ public class ServerRedstoneBlock {
     public static void onServerStopping(MinecraftServer server) {
         block.off();
         analytics.flush();
+    }
+
+    public static void onServerTick(World world) {
+        if (tick++ > (MINUTE_IN_TICKS * 10)) {
+            analytics.flush();
+            tick = 0;
+        }
     }
 }

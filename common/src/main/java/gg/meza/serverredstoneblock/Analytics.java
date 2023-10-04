@@ -1,16 +1,16 @@
 package gg.meza.serverredstoneblock;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.Map;
 
 import static gg.meza.serverredstoneblock.ServerRedstoneBlock.VERSION;
 
 public class Analytics {
-    private static final String POSTHOG_API_KEY = "POSTHOG_API_KEY_REPL";
+//    private static final String POSTHOG_API_KEY = "POSTHOG_API_KEY_REPL";
+    private static final String POSTHOG_API_KEY = "phc_gydkp9wcXJnWaxxGx1W30VP0f9KYAXQS8YqEOvjrTKj";
     private static final String POSTHOG_HOST = "https://eu.posthog.com";
     private final String OS_NAME = System.getProperty("os.name");
     private String MC_VERSION;
@@ -24,18 +24,14 @@ public class Analytics {
     }
 
     private void sendEvent(String event) {
-        sendEvent(event, new NameValuePair[]{});
+        sendEvent(event, Map.of());
     }
 
-    private void sendEvent(String event, NameValuePair[] props) {
+    private void sendEvent(String event, Map<String, String> props) {
         try {
-            HttpClient client = HttpClients.createDefault();
-            HttpPost post = new HttpPost(POSTHOG_HOST + "/capture");
-            post.addHeader("Content-Type", "application/json");
-
             String data = "{\"api_key\": \"" + POSTHOG_API_KEY + "\", \"distinct_id\": \"" + this.worldId + "\", \"event\": \"" + event + "\", \"properties\": {";
-            for (NameValuePair prop : props) {
-                data += "\"" + prop.getName() + "\": \"" + prop.getValue() + "\",";
+            for (Map.Entry<String, String> prop : props.entrySet()) {
+                data += "\"" + prop.getKey() + "\": \"" + prop.getValue() + "\",";
             }
 
             data += "\"Minecraft Version\": \"" + MC_VERSION + "\",";
@@ -48,9 +44,13 @@ public class Analytics {
 
             data += "}}";
 
-            post.setEntity(new StringEntity(data));
+            HttpRequest post = HttpRequest.newBuilder()
+                    .uri(new URI(POSTHOG_HOST + "/capture"))
+                    .header("Content-Type", "application/json")
+                    .method("POST", HttpRequest.BodyPublishers.ofString(data))
+                    .build();
 
-            client.execute(post);
+            HttpClient.newBuilder().build().send(post, HttpResponse.BodyHandlers.discarding());
 
         } catch (Exception e) {
             //noop
@@ -60,6 +60,7 @@ public class Analytics {
     public void setWorldId(String worldId) {
         this.worldId = worldId;
     }
+
     public void setLoader(String loader, String loaderVersion) {
         this.loader = loader;
         this.loaderVersion = loaderVersion;
@@ -86,11 +87,12 @@ public class Analytics {
     }
 
     public void redstoneToggled(ServerPowerState state) {
-        sendEvent("Server Redstone Block Toggled", new NameValuePair[]{new BasicNameValuePair("state", state.toString())});
+        sendEvent("Server Redstone Block Toggled", Map.of("state", state.toString()));
     }
 
     public void flush() {
         if (craftedCount == 0) return;
-        sendEvent("Server Redstone Block Crafted", new NameValuePair[]{new BasicNameValuePair("count", String.valueOf(craftedCount))});
+        sendEvent("Server Redstone Block Crafted", Map.of("count", String.valueOf(craftedCount)));
+        craftedCount = 0;
     }
 }

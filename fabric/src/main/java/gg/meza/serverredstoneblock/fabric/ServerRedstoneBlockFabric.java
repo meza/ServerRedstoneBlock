@@ -6,6 +6,7 @@ import gg.meza.serverredstoneblock.ServerRedstoneBlock;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.loader.impl.FabricLoaderImpl;
 import net.minecraft.block.entity.BlockEntityType;
@@ -41,5 +42,7 @@ public class ServerRedstoneBlockFabric implements ModInitializer {
             ServerRedstoneBlock.onServerStarted(server, "fabric", FabricLoaderImpl.VERSION);
         });
         ServerLifecycleEvents.SERVER_STOPPING.register(ServerRedstoneBlock::onServerStopping);
+
+        ServerTickEvents.START_WORLD_TICK.register(ServerRedstoneBlock::onServerTick);
     }
 }

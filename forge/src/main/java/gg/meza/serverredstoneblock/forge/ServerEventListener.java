@@ -2,6 +2,7 @@ package gg.meza.serverredstoneblock.forge;
 
 import gg.meza.serverredstoneblock.ServerRedstoneBlock;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -27,5 +28,10 @@ public class ServerEventListener {
         event.getDispatcher().register(getWarningCommand());
         event.getDispatcher().register(getOnCommand());
         event.getDispatcher().register(getOffCommand());
+    }
+
+    @SubscribeEvent
+    public static void onServerTick(TickEvent.ServerTickEvent event) {
+        ServerRedstoneBlock.onServerTick(event.getServer().getOverworld());
     }
 }

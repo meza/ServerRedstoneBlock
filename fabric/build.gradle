@@ -11,6 +11,10 @@ loom {
     accessWidenerPath = project(":common").loom.accessWidenerPath
 }
 
+base {
+    archivesName = project.archives_base_name + "-fabric"
+}
+
 configurations {
     common
     shadowCommon // Don't use shadow from the shadow plugin because we don't want IDEA to index this.

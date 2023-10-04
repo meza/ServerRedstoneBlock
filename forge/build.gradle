@@ -5,6 +5,9 @@ architectury {
     platformSetupLoomIde()
     forge()
 }
+base {
+    archivesName = project.archives_base_name + "-forge"
+}
 
 loom {
     accessWidenerPath = project(":common").loom.accessWidenerPath

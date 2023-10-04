@@ -14,8 +14,6 @@ permissions:
 
 env:
     MC_VERSION: 1.20.1
-  # release type is release when branch is main, alpha when branch is alpha and beta when branch is beta
-    RELEASE_TYPE: ${{ startsWith(github.ref_name, 'MC') && 'release' || startsWith(github.ref_name, 'alpha-') && 'alpha' || startsWith(github.ref_name, 'beta-') && 'beta' }}
 
 jobs:
   build:
@@ -79,10 +77,6 @@ jobs:
         if: ${{ runner.os == 'Linux' && matrix.java == '17' }}
         run: echo "Needs release published? ${{ steps.get-next-version.outputs.new-release-published == 'true' }}"
 
-      - name: "ℹ️ Release type is"
-        if: ${{ runner.os == 'Linux' && matrix.java == '17' }}
-        run: echo "Release type is ${{ env.RELEASE_TYPE }}"
-
       - name: "🏗️ Build & Release to GitHub"
         if: ${{ runner.os == 'Linux' && matrix.java == '17' && (steps.get-next-version.outputs.new-release-published == 'true')  }}
         env:
@@ -101,10 +95,10 @@ jobs:
             !**/*-@(dev|sources|all|shadow).jar
 
       - uses: Kir-Antipov/mc-publish@v3.3
-        name: "🚀 Publish: Fabric ${{ env.RELEASE_TYPE }}"
+        name: "🚀 Publish: Fabric Beta"
         if: ${{ matrix.java == '17' && runner.os == 'Linux' && (steps.get-next-version.outputs.new-release-published == 'true') }}
         with:
-          version-type: ${{ env.RELEASE_TYPE }}
+          version-type: beta
           version: ${{ needs.get-next-version.outputs.new-release-version }}
           name: ${{ needs.get-next-version.outputs.new-release-version }}-Fabric
           modrinth-id: ${{ vars.MODRINTH_ID }}
@@ -125,10 +119,10 @@ jobs:
           game-version-filter: releases
 
       - uses: Kir-Antipov/mc-publish@v3.3
-        name: "🚀 Publish: Forge ${{ env.RELEASE_TYPE }}"
+        name: "🚀 Publish: Forge Beta"
         if: ${{ matrix.java == '17' && runner.os == 'Linux' && (steps.get-next-version.outputs.new-release-published == 'true') }}
         with:
-          version-type: ${{ env.RELEASE_TYPE }}
+          version-type: beta
           version: ${{ needs.get-next-version.outputs.new-release-version }}
           name: ${{ needs.get-next-version.outputs.new-release-version }}-Forge
           modrinth-id: ${{ vars.MODRINTH_ID }}

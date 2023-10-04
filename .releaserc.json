@@ -1,18 +1,8 @@
 {
   "branches": [
-    "MC1.20.1",
-    {
-      "name": "beta-MC1.20.1",
-      "channel": "beta",
-      "prerelease": true
-    },
-    {
-      "name": "alpha-MC1.20.1",
-      "channel": "alpha",
-      "prerelease": true
-    }
+    "MC1.20.1"
   ],
-  "tagFormat": "v${version}",
+  "tagFormat": "v${version}-MC1.20.1",
   "plugins": [
     [
       "@semantic-release/commit-analyzer",

@@ -29,12 +29,12 @@
       {
         "assets": [
           {
-            "path": "forge/build/libs/!(*-@(dev|sources)).jar",
+            "path": "forge/build/libs/!(*-@(dev|sources|shadow)).jar",
             "name": "ServerRedstoneBlock-forge-${nextRelease.gitTag}.jar",
             "label": "ServerRedstoneBlock-forge-${nextRelease.gitTag}.jar"
           },
           {
-            "path": "fabric/build/libs/!(*-@(dev|sources)).jar",
+            "path": "fabric/build/libs/!(*-@(dev|sources|shadow)).jar",
             "name": "ServerRedstoneBlock-fabric-${nextRelease.gitTag}.jar",
             "label": "ServerRedstoneBlock-fabric-${nextRelease.gitTag}.jar"
           }

@@ -42,7 +42,7 @@ displayName="Server Redstone Block" #mandatory
 
 # The description text for the mod (multi line!) (#mandatory)
 description='''
-
+A mod for a server controlled redstone block.
 '''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.serverredstoneblock]] #optional

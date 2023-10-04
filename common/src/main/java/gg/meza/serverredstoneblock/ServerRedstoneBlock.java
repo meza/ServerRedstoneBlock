@@ -1,8 +1,9 @@
 package gg.meza.serverredstoneblock;
 
-import dev.architectury.event.events.common.CommandRegistrationEvent;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,30 +30,27 @@ public class ServerRedstoneBlock {
 
     public static void init() {
         LOGGER.info("ServerRedstoneBlock init");
+    }
 
-        CommandRegistrationEvent.EVENT.register((dispatcher, registry, selection) -> {
-            dispatcher.register(
-                    literal(COMMAND_BASE).then(literal("warning").executes(context -> {
-                        block.warning();
-                        return 1;
-                    })).requires(source -> source.hasPermissionLevel(4))
-            );
+    public static LiteralArgumentBuilder<ServerCommandSource> getOnCommand() {
+        return literal(COMMAND_BASE).then(literal("on").executes(context -> {
+            block.on();
+            return 1;
+        })).requires(source -> source.hasPermissionLevel(4));
+    }
 
-            dispatcher.register(
-                    literal(COMMAND_BASE).then(literal("off").executes(context -> {
-                        block.off();
-                        return 1;
-                    })).requires(source -> source.hasPermissionLevel(4))
-            );
+    public static LiteralArgumentBuilder<ServerCommandSource> getOffCommand() {
+        return literal(COMMAND_BASE).then(literal("off").executes(context -> {
+            block.off();
+            return 1;
+        })).requires(source -> source.hasPermissionLevel(4));
+    }
 
-            dispatcher.register(
-                    literal(COMMAND_BASE).then(literal("on").executes(context -> {
-                        block.on();
-                        return 1;
-                    })).requires(source -> source.hasPermissionLevel(4))
-            );
-        });
-
+    public static LiteralArgumentBuilder<ServerCommandSource> getWarningCommand() {
+        return literal(COMMAND_BASE).then(literal("warning").executes(context -> {
+            block.warning();
+            return 1;
+        })).requires(source -> source.hasPermissionLevel(4));
     }
 
     public static void onServerStarted(MinecraftServer server) {

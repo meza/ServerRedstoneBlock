@@ -8,7 +8,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 
 public class Analytics {
-//    private static final String POSTHOG_API_KEY = "POSTHOG_API_KEY_REPL";
+    //    private static final String POSTHOG_API_KEY = "POSTHOG_API_KEY_REPL";
     private static final String POSTHOG_API_KEY = "phc_gydkp9wcXJnWaxxGx1W30VP0f9KYAXQS8YqEOvjrTKj";
     private static final String POSTHOG_HOST = "https://eu.posthog.com";
     private final String OS_NAME = System.getProperty("os.name");
@@ -22,6 +22,7 @@ public class Analytics {
     private void sendEvent(String event) {
         sendEvent(event, new NameValuePair[]{});
     }
+
     private void sendEvent(String event, NameValuePair[] props) {
         try {
             HttpClient client = HttpClients.createDefault();
@@ -60,12 +61,19 @@ public class Analytics {
     public void serverStartedEvent() {
         sendEvent("Server Started");
     }
+
+    public void redstoneBlockCrafted() {
+        sendEvent("Server Redstone Block Crafted");
+    }
+
     public void redstoneBlockPlaced() {
         sendEvent("Server Redstone Block Placed");
     }
+
     public void redstoneBlockBroken() {
         sendEvent("Server Redstone Block Broken");
     }
+
     public void redstoneToggled(ServerPowerState state) {
         sendEvent("Server Redstone Block Toggled", new NameValuePair[]{new BasicNameValuePair("state", state.toString())});
     }

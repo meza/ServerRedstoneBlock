@@ -36,6 +36,7 @@ public class ServerRedstoneBlockForge {
     }
 
     private void onCommonSetup(FMLCommonSetupEvent event) {
+        LOGGER.info("ServerRedstoneBlockForge onCommonSetup");
         setEntityType(blockEntityTypeReg.get());
         ServerRedstoneBlock.init();
     }

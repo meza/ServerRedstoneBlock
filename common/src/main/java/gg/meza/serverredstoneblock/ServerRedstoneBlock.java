@@ -53,9 +53,9 @@ public class ServerRedstoneBlock {
         })).requires(source -> source.hasPermissionLevel(4));
     }
 
-    public static void onServerStarted(MinecraftServer server) {
+    public static void onServerStarted(MinecraftServer server, String loader, String loaderVersion) {
         String worldId = WorldInfoSaveData.getWorldId(server);
-
+        analytics.setLoader(loader, loaderVersion);
         analytics.setMinecraftVersion(server.method_3827());
         analytics.setWorldId(worldId);
         analytics.serverStartedEvent();

@@ -14,7 +14,9 @@ public class Analytics {
     private final String OS_NAME = System.getProperty("os.name");
     private String MC_VERSION;
     private final String JAVA_VERSION = System.getProperty("java.version");
+    private String loaderVersion;
     private String worldId;
+    private String loader;
     private int craftedCount = 0;
 
     public Analytics() {
@@ -36,6 +38,8 @@ public class Analytics {
             }
 
             data += "\"Minecraft Version\": \"" + MC_VERSION + "\",";
+            data += "\"Minecraft Loader\": \"" + loader + "\",";
+            data += "\"Minecraft Loader Version\": \"" + loaderVersion + "\",";
             data += "\"OS\": \"" + OS_NAME + "\",";
             data += "\"Local Time\": \"" + new java.util.Date().toString() + "\",";
             data += "\"Java Version\": \"" + JAVA_VERSION + "\"";
@@ -53,6 +57,10 @@ public class Analytics {
 
     public void setWorldId(String worldId) {
         this.worldId = worldId;
+    }
+    public void setLoader(String loader, String loaderVersion) {
+        this.loader = loader;
+        this.loaderVersion = loaderVersion;
     }
 
     public void setMinecraftVersion(String minecraftVersion) {
@@ -80,6 +88,7 @@ public class Analytics {
     }
 
     public void flush() {
+        if (craftedCount == 0) return;
         sendEvent("Server Redstone Block Crafted", new NameValuePair[]{new BasicNameValuePair("count", String.valueOf(craftedCount))});
     }
 }

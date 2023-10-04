@@ -6,14 +6,15 @@ import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.loading.FMLLoader;
 
 import static gg.meza.serverredstoneblock.ServerRedstoneBlock.*;
 
 @Mod.EventBusSubscriber(modid = ServerRedstoneBlock.MOD_ID)
-public class EventListener {
+public class ServerEventListener {
     @SubscribeEvent
     public static void onServerStarted(ServerStartedEvent server) {
-        ServerRedstoneBlock.onServerStarted(server.getServer());
+        ServerRedstoneBlock.onServerStarted(server.getServer(), "forge", FMLLoader.versionInfo().forgeVersion());
     }
 
     @SubscribeEvent

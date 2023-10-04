@@ -38,9 +38,14 @@
       {
         "assets": [
           {
-            "path": "build/libs/!(*-@(dev|sources)).jar",
-            "name": "ServerRedstoneBlock-${nextRelease.gitTag}.jar",
-            "label": "ServerRedstoneBlock-${nextRelease.gitTag}.jar"
+            "path": "forge/build/libs/!(*-@(dev|sources)).jar",
+            "name": "ServerRedstoneBlock-forge-${nextRelease.gitTag}.jar",
+            "label": "ServerRedstoneBlock-forge-${nextRelease.gitTag}.jar"
+          },
+          {
+            "path": "fabric/build/libs/!(*-@(dev|sources)).jar",
+            "name": "ServerRedstoneBlock-fabric-${nextRelease.gitTag}.jar",
+            "label": "ServerRedstoneBlock-fabric-${nextRelease.gitTag}.jar"
           }
         ]
       }

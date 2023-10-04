@@ -2,11 +2,11 @@
   "branches": [
     "MC1.20.1",
     {
-      "name": "beta-1.20.1",
+      "name": "beta-MC1.20.1",
       "prerelease": true
     },
     {
-      "name": "alpha-1.20.1",
+      "name": "alpha-MC1.20.1",
       "prerelease": true
     }
   ],

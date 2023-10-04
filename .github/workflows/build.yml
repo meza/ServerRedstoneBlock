@@ -99,8 +99,8 @@ jobs:
         if: ${{ matrix.java == '17' && runner.os == 'Linux' && (steps.get-next-version.outputs.new-release-published == 'true') }}
         with:
           version-type: beta
-          name: ServerRedstoneBlock for ${{ env.MC_VERSION }} Fabric v${{ needs.get-next-version.outputs.new-release-version }}
-          version: ${{ needs.get-next-version.outputs.new-release-version }}
+          name: ServerRedstoneBlock Fabric v${{ steps.get-next-version.outputs.new-release-version }}
+          version: ${{ steps.get-next-version.outputs.new-release-version }}
           modrinth-id: ${{ vars.MODRINTH_ID }}
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
           curseforge-id: ${{ vars.CURSEFORGE_ID }}
@@ -123,8 +123,8 @@ jobs:
         if: ${{ matrix.java == '17' && runner.os == 'Linux' && (steps.get-next-version.outputs.new-release-published == 'true') }}
         with:
           version-type: beta
-          version: ${{ needs.get-next-version.outputs.new-release-version }}
-          name: ServerRedstoneBlock for ${{ env.MC_VERSION }} Forge v${{ needs.get-next-version.outputs.new-release-version }}
+          version: ${{ steps.get-next-version.outputs.new-release-version }}
+          name: ServerRedstoneBlock Forge v${{ steps.get-next-version.outputs.new-release-version }}
           modrinth-id: ${{ vars.MODRINTH_ID }}
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
           curseforge-id: ${{ vars.CURSEFORGE_ID }}

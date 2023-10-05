@@ -10,6 +10,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.loader.impl.FabricLoaderImpl;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.registry.Registry;
 
 import static gg.meza.serverredstoneblock.ServerRedstoneBlock.*;
@@ -24,6 +25,7 @@ public class ServerRedstoneBlockFabric implements ModInitializer {
         setEntityType(redstoneBlockEntityType);
         Registry.register(Registry.BLOCK, redstoneBlockId, block);
         RedstoneBlockItem item = Registry.register(Registry.ITEM, redstoneBlockId, new RedstoneBlockItem(block));
+        
         ServerRedstoneBlock.init();
         CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
             dispatcher.register(

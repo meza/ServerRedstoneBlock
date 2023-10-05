@@ -6,7 +6,7 @@ architectury {
     forge()
 }
 base {
-    archivesName = project.archives_base_name + "-forge"
+    archivesName = project.archives_base_name + "-forge-" + project.minecraft_version
 }
 
 loom {

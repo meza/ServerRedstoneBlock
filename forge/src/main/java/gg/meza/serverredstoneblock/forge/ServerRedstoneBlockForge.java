@@ -6,6 +6,8 @@ import gg.meza.serverredstoneblock.ServerRedstoneBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroups;
+import net.minecraftforge.event.CreativeModeTabEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -29,6 +31,7 @@ public class ServerRedstoneBlockForge {
 
     public ServerRedstoneBlockForge() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onCommonSetup);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::addItemToCreativeTab);
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         BLOCKS.register(modEventBus);
         ITEMS.register(modEventBus);
@@ -39,5 +42,12 @@ public class ServerRedstoneBlockForge {
         LOGGER.info("ServerRedstoneBlockForge onCommonSetup");
         setEntityType(blockEntityTypeReg.get());
         ServerRedstoneBlock.init();
+    }
+
+    private void addItemToCreativeTab(CreativeModeTabEvent.BuildContents event) {
+        LOGGER.info("BuildCreativeModeTabContentsEvent");
+        if(event.getTab() == ItemGroups.REDSTONE) {
+            event.accept(registeredBlock);
+        }
     }
 }

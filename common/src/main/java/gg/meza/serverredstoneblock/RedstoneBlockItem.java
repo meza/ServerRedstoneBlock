@@ -4,7 +4,6 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.world.World;
@@ -13,7 +12,7 @@ import static gg.meza.serverredstoneblock.ServerRedstoneBlock.analytics;
 
 public class RedstoneBlockItem extends BlockItem {
 
-    private static final Settings itemProps = new Item.Settings().group(ItemGroup.REDSTONE);
+    private static final Settings itemProps = new Item.Settings();
 
     public RedstoneBlockItem(Block block) {
         super(block, itemProps);

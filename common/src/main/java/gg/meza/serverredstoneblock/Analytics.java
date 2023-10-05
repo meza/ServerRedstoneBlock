@@ -9,8 +9,7 @@ import java.util.Map;
 import static gg.meza.serverredstoneblock.ServerRedstoneBlock.VERSION;
 
 public class Analytics {
-//    private static final String POSTHOG_API_KEY = "POSTHOG_API_KEY_REPL";
-    private static final String POSTHOG_API_KEY = "phc_gydkp9wcXJnWaxxGx1W30VP0f9KYAXQS8YqEOvjrTKj";
+    private static final String POSTHOG_API_KEY = "POSTHOG_API_KEY_REPL";
     private static final String POSTHOG_HOST = "https://eu.posthog.com";
     private final String OS_NAME = System.getProperty("os.name");
     private String MC_VERSION;
@@ -19,8 +18,13 @@ public class Analytics {
     private String worldId;
     private String loader;
     private int craftedCount = 0;
+    private boolean enabled = false;
 
     public Analytics() {
+    }
+
+    public void enable() {
+        this.enabled = true;
     }
 
     private void sendEvent(String event) {
@@ -28,6 +32,8 @@ public class Analytics {
     }
 
     private void sendEvent(String event, Map<String, String> props) {
+        if (!enabled) return;
+
         try {
             String data = "{\"api_key\": \"" + POSTHOG_API_KEY + "\", \"distinct_id\": \"" + this.worldId + "\", \"event\": \"" + event + "\", \"properties\": {";
             for (Map.Entry<String, String> prop : props.entrySet()) {

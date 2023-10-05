@@ -23,7 +23,7 @@ public class ServerRedstoneBlock {
     public static BlockEntityType<RedstoneBlockEntity> redstoneBlockEntityType;
 
     public static final String COMMAND_BASE = "srs";
-    public static Analytics analytics = new Analytics();
+    public static Analytics analytics;
     private static int tick = 0;
     private static int MINUTE_IN_TICKS = 1200;
 
@@ -33,6 +33,7 @@ public class ServerRedstoneBlock {
 
     public static void init() {
         LOGGER.info("ServerRedstoneBlock init");
+        analytics = new Analytics();
     }
 
     public static LiteralArgumentBuilder<ServerCommandSource> getOnCommand() {
@@ -57,6 +58,7 @@ public class ServerRedstoneBlock {
     }
 
     public static void onServerStarted(MinecraftServer server, String loader, String loaderVersion) {
+        analytics.enable();
         String worldId = WorldInfoSaveData.getWorldId(server);
         analytics.setLoader(loader, loaderVersion);
         analytics.setMinecraftVersion(server.method_3827());

@@ -7,7 +7,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.world.World;
 
 import static gg.meza.serverredstoneblock.ServerRedstoneBlock.analytics;
@@ -29,6 +28,6 @@ public class RedstoneBlockItem extends BlockItem {
 
     @Override
     public Text getName() {
-        return new TranslatableText("block.serverredstoneblock.server_redstone_block");
+        return Text.translatable("block.serverredstoneblock.server_redstone_block");
     }
 }

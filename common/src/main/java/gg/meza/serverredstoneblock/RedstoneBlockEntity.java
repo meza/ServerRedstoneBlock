@@ -2,7 +2,6 @@ package gg.meza.serverredstoneblock;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -19,8 +18,12 @@ public class RedstoneBlockEntity extends BlockEntity {
     }
 
     public void tick(World level, BlockPos blockPos, BlockState blockState) {
+        if (level.isClient()) {
+            return;
+        }
+
         if (tickCount++ == 20) {
-            level.setBlockState(blockPos, blockState.with(POWER_STATE, powerState), 3);
+            level.setBlockState(blockPos, blockState.with(POWER_STATE, powerState), 2);
             level.updateNeighbors(blockPos, level.getBlockState(blockPos).getBlock());
             tickCount = 0;
         }

@@ -11,6 +11,8 @@ This can give time for the contraptions to shut down gracefully before a server 
 
 ## Usage
 
+You have to have it installed **both on the server and the client** side as it adds a new block.
+
 ### Player
 
 As a player, you can use the block as a normal redstone block.

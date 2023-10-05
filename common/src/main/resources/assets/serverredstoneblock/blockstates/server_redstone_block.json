@@ -1,7 +1,0 @@
-{
-  "variants": {
-    "power_state=on": { "model": "serverredstoneblock:block/server_redstone_block" },
-    "power_state=off": { "model": "serverredstoneblock:block/server_redstone_block_off" },
-    "power_state=warning": { "model": "serverredstoneblock:block/server_redstone_block_warning" }
-  }
-}

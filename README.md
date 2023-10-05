@@ -39,3 +39,7 @@ When the server starts, the blocks always start in the ON state.
 - `/srs on` : Sets the block to the on state
 - `/srs warning` : Sets the block to the warning state
 - `/srs off` : Sets the block to the off state
+
+## Development
+
+You can find the code in the Minecraft specific branches.

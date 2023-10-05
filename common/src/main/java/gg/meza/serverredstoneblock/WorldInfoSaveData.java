@@ -12,6 +12,12 @@ public class WorldInfoSaveData extends PersistentState {
     public String worldId = UUID.randomUUID().toString();
     private boolean dirty = false;
 
+    private static Type<WorldInfoSaveData> type = new Type<>(
+            WorldInfoSaveData::create,
+            WorldInfoSaveData::load,
+            null
+    );
+
     public static WorldInfoSaveData create() {
         WorldInfoSaveData data = new WorldInfoSaveData();
         data.setDirty();
@@ -41,7 +47,7 @@ public class WorldInfoSaveData extends PersistentState {
 
     public static String getWorldId(MinecraftServer server) {
         PersistentStateManager persistentStateManager = server.getWorld(World.OVERWORLD).getPersistentStateManager();
-        WorldInfoSaveData state = persistentStateManager.method_17924(WorldInfoSaveData::load, WorldInfoSaveData::create, "serverredstoneblock");
+        WorldInfoSaveData state = persistentStateManager.getOrCreate(type, "serverredstoneblock");
         state.markDirty();
 
         return state.worldId;

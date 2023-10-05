@@ -61,7 +61,7 @@ public class ServerRedstoneBlock {
         analytics.enable();
         String worldId = WorldInfoSaveData.getWorldId(server);
         analytics.setLoader(loader, loaderVersion);
-        analytics.setMinecraftVersion(server.method_3827());
+        analytics.setMinecraftVersion(server.getVersion());
         analytics.setWorldId(worldId);
         analytics.serverStartedEvent();
     }

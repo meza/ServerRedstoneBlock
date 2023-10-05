@@ -12,7 +12,7 @@ loom {
 }
 
 base {
-    archivesName = project.archives_base_name + "-fabric"
+    archivesName = project.archives_base_name + "-fabric-" + project.minecraft_version
 }
 
 configurations {

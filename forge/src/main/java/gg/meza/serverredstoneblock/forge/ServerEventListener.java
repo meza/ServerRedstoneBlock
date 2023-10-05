@@ -32,6 +32,6 @@ public class ServerEventListener {
 
     @SubscribeEvent
     public static void onServerTick(TickEvent.ServerTickEvent event) {
-        ServerRedstoneBlock.onServerTick(event.getServer().getOverworld());
+        ServerRedstoneBlock.onServerTick(null);
     }
 }

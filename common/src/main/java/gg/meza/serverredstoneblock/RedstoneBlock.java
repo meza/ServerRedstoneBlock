@@ -20,7 +20,7 @@ import static gg.meza.serverredstoneblock.ServerRedstoneBlock.analytics;
 
 public class RedstoneBlock extends BlockWithEntity {
     public static final EnumProperty<ServerPowerState> POWER_STATE = EnumProperty.of("power_state", ServerPowerState.class);
-    public static ServerPowerState powerState = ServerPowerState.ON;
+    public static ServerPowerState powerState;
 
     public static final Settings blockProps = Settings.of(Material.METAL)
             .mapColor(MapColor.RED)
@@ -30,7 +30,8 @@ public class RedstoneBlock extends BlockWithEntity {
 
     public RedstoneBlock() {
         super(blockProps);
-        setDefaultState(getDefaultState().with(POWER_STATE, ServerPowerState.ON));
+        powerState = ServerPowerState.ON;
+        setDefaultState(getDefaultState().with(POWER_STATE, powerState));
     }
 
     public BlockRenderType getRenderType(BlockState state) {

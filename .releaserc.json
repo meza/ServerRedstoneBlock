@@ -1,8 +1,8 @@
 {
   "branches": [
-    "MC1.19.3"
+    "MC1.19.4"
   ],
-  "tagFormat": "v${version}-MC1.19.3",
+  "tagFormat": "v${version}-MC1.19.4",
   "plugins": [
     [
       "@semantic-release/commit-analyzer",

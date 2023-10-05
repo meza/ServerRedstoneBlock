@@ -13,7 +13,7 @@ permissions:
   pull-requests: write
 
 env:
-    MC_VERSION: 1.19.3
+    MC_VERSION: 1.19.4
 
 jobs:
   build:

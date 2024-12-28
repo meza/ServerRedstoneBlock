@@ -1,8 +1,12 @@
 {
   "branches": [
-    "MC1.20.2"
+    "main",
+    {
+      "name": "beta",
+      "prerelease": true
+    }
   ],
-  "tagFormat": "v${version}-MC1.20.2",
+  "tagFormat": "v${version}",
   "plugins": [
     [
       "@semantic-release/commit-analyzer",
@@ -20,7 +24,7 @@
     [
       "@semantic-release/changelog",
       {
-        "changelogTitle": "# Server Redstone Block Changelog",
+        "changelogTitle": "# Changelog",
         "changelogFile": "CHANGELOG.md"
       }
     ],
@@ -29,14 +33,7 @@
       {
         "assets": [
           {
-            "path": "forge/build/libs/!(*-@(dev|sources|shadow)).jar",
-            "name": "ServerRedstoneBlock-forge-${nextRelease.gitTag}.jar",
-            "label": "ServerRedstoneBlock-forge-${nextRelease.gitTag}.jar"
-          },
-          {
-            "path": "fabric/build/libs/!(*-@(dev|sources|shadow)).jar",
-            "name": "ServerRedstoneBlock-fabric-${nextRelease.gitTag}.jar",
-            "label": "ServerRedstoneBlock-fabric-${nextRelease.gitTag}.jar"
+            "path": "build/libs/*.jar"
           }
         ]
       }
@@ -46,6 +43,42 @@
       {
         "prepareCmd": "./scripts/release.sh \"${nextRelease.version}\""
       }
-    ]
+    ],
+    ["semantic-release-discord-notifier", {
+      "embedJson": {
+        "username": "Server Redstone Block",
+        "avatar_url": "https://github.com/meza/ServerRedstoneBlock/blob/main/src/main/resources/assets/serverredstoneblock/icon.png?raw=true",
+        "content": "# :rocket: ${nextRelease.version} just dropped",
+        "embeds": [
+          {
+            "title": "What changed?",
+            "description": "${nextRelease.notes}",
+            "color": 7377919,
+            "footer": {
+              "text": "Curseforge might take a few hours to approve the file so if you want to download it immediately, use the Modrinth link."
+            }
+          }
+        ],
+        "components": [
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "style": 5,
+                "label": "Download from Modrinth",
+                "url": "https://modrinth.com/mod/server-redstone-block"
+              },
+              {
+                "type": 2,
+                "style": 5,
+                "label": "Download from Curseforge",
+                "url": "https://www.curseforge.com/minecraft/mc-mods/server-redstone-block"
+              }
+            ]
+          }
+        ]
+      }
+    }]
   ]
 }

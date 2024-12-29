@@ -1,12 +1,14 @@
 /*? if forge {*/
 package gg.meza.serverredstoneblock.forge;
 
+import gg.meza.serverredstoneblock.E2ETests;
 import gg.meza.serverredstoneblock.RedstoneBlockEntity;
 import gg.meza.serverredstoneblock.RedstoneBlockItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraftforge.event.RegisterGameTestsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;

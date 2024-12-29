@@ -15,6 +15,9 @@
   "entrypoints": {
     "main": [
       "gg.meza.serverredstoneblock.ServerRedstoneBlock"
+    ],
+    "fabric-gametest" : [
+      "gg.meza.serverredstoneblock.E2ETests"
     ]
   },
   "depends": {

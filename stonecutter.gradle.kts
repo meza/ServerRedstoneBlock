@@ -11,6 +11,16 @@ stonecutter registerChiseled tasks.register("chiseledBuild", stonecutter.chisele
     ofTask("build")
 }
 
+stonecutter registerChiseled tasks.register("chiseledTest", stonecutter.chiseled) {
+    group = "project"
+    ofTask("test")
+}
+
+stonecutter registerChiseled tasks.register("chiseledTestE2E", stonecutter.chiseled) {
+    group = "project"
+    ofTask("runGameTestServer")
+}
+
 stonecutter registerChiseled tasks.register("chiseledBuildAndCollect", stonecutter.chiseled) {
     group = "project"
     ofTask("buildAndCollect")

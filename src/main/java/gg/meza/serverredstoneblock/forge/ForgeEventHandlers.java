@@ -1,8 +1,10 @@
 /*? if forge {*/
 package gg.meza.serverredstoneblock.forge;
 
+import gg.meza.serverredstoneblock.E2ETests;
 import gg.meza.serverredstoneblock.ServerRedstoneBlock;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.RegisterGameTestsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
@@ -14,9 +16,10 @@ import static gg.meza.serverredstoneblock.ServerRedstoneBlock.*;
 
 
 @Mod.EventBusSubscriber(modid = ServerRedstoneBlock.MOD_ID)
-public class ServerEventListener {
+public class ForgeEventHandlers {
     @SubscribeEvent
     public static void onServerStarted(ServerStartedEvent server) {
+        LOGGER.info("Server started from the event bus");
         ServerRedstoneBlock.onServerStarted(server.getServer(), "forge", FMLLoader.versionInfo().forgeVersion());
     }
 

@@ -1,6 +1,7 @@
 import java.util.*
 
 plugins {
+    id("idea")
     id("dev.architectury.loom")
     id("me.modmuss50.mod-publish-plugin")
 }
@@ -60,6 +61,39 @@ loom {
         if (environment == "client") programArgs("--username=houseofmeza")
     }
 
+    runs {
+        create("gameTestClient") {
+            client()
+            runDir = "../../run"
+            if (isFabric) {
+                vmArg("-Dfabric-api.gametest")
+                vmArg("-Dfabric-api.gametest.report-file=${rootProject.file("build/junit.xml")}");
+            }
+            if (isForge) {
+                //property("forge.enabledGameTestNamespaces", "serverredstoneblock")
+                property("forge.enableGameTest", "true")
+            }
+        }
+
+        create("gameTestServer") {
+            server()
+            name("Game Test Server")
+            runDir = "../../run"
+            if (isFabric) {
+                vmArg("-Dfabric-api.gametest")
+                vmArg("-Dfabric-api.gametest.report-file=${rootProject.file("build/junit.xml")}");
+            }
+            if (isForge) {
+                property("forge.logging.markers", "REGISTRIES")
+//                property("forge.logging.console.level", "debug")
+                property("forge.enabledGameTestNamespaces", "serverredstoneblock")
+                vmArg("-Dforge.enableGameTest")
+                property("forge.enableGameTest", "true")
+                property("forge.gameTestServer", "true")
+            }
+        }
+    }
+
     if (isForge) {
         forge.convertAccessWideners = true
     }
@@ -84,6 +118,7 @@ dependencies {
         println("Adding Fabric dependencies")
         modImplementation("net.fabricmc:fabric-loader:${mod.prop("loader_version")}")
         modApi("net.fabricmc.fabric-api:fabric-api:${mod.prop("fabric_version")}")
+        modApi("net.fabricmc.fabric-api:fabric-gametest-api-v1:${mod.prop("fabric_version")}")
     }
 }
 
@@ -102,6 +137,16 @@ if (stonecutter.current.isActive) {
     rootProject.tasks.register("runActive") {
         group = "project"
         dependsOn(tasks.named("runClient"))
+    }
+
+    rootProject.tasks.register("testActiveClient") {
+        group = "project"
+        dependsOn(tasks.named("runGameTestClient"))
+    }
+
+    rootProject.tasks.register("testActiveServer") {
+        group = "project"
+        dependsOn(tasks.named("runGameTestServer"))
     }
 }
 

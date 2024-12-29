@@ -80,6 +80,7 @@ public class ServerRedstoneBlock {
             event.accept(RegistryHelper.REDSTONE_BLOCK);
         }
     }
+
     /*?}*/
 
 

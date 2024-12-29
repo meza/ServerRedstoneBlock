@@ -1,7 +1,7 @@
 package gg.meza.serverredstoneblock;
 
 /*? if fabric {*/
-/*import gg.meza.serverredstoneblock.fabric.RegistryHelper;
+import gg.meza.serverredstoneblock.fabric.RegistryHelper;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -11,10 +11,10 @@ import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.MapColor;
 import net.minecraft.sound.BlockSoundGroup;
-*//*?}*/
+/*?}*/
 
 /*? if forge {*/
-import gg.meza.serverredstoneblock.forge.RegistryHelper;
+/*import gg.meza.serverredstoneblock.forge.RegistryHelper;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.MapColor;
@@ -25,7 +25,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-/*?}*/
+*//*?}*/
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.server.MinecraftServer;
@@ -40,13 +40,13 @@ import static gg.meza.serverredstoneblock.ServerRedstoneBlock.MOD_ID;
 import static net.minecraft.server.command.CommandManager.literal;
 
 /*? if fabric {*/
-/*public class ServerRedstoneBlock implements ModInitializer {
-*//*?}*/
+public class ServerRedstoneBlock implements ModInitializer {
+/*?}*/
 
 /*? if forge {*/
-@Mod(MOD_ID)
+/*@Mod(MOD_ID)
 public class ServerRedstoneBlock {
-/*?}*/
+*//*?}*/
 
     public static final String VERSION = "VERSION_REPL";
     public static final String blockName = "server_redstone_block";
@@ -63,7 +63,7 @@ public class ServerRedstoneBlock {
             .sounds(BlockSoundGroup.METAL));
 
     /*? if forge {*/
-    public ServerRedstoneBlock() {
+    /*public ServerRedstoneBlock() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::onCommonSetup);
         modEventBus.addListener(this::addItemToCreativeTab);
@@ -81,7 +81,7 @@ public class ServerRedstoneBlock {
         }
     }
 
-    /*?}*/
+    *//*?}*/
 
 
     //COMMON
@@ -135,7 +135,7 @@ public class ServerRedstoneBlock {
     }
 
     /*? if fabric {*/
-    /*@Override
+    @Override
     public void onInitialize() {
         RegistryHelper.registerBlockAndItems();
         ServerRedstoneBlock.init();
@@ -159,7 +159,7 @@ public class ServerRedstoneBlock {
 
         ServerTickEvents.START_WORLD_TICK.register(ServerRedstoneBlock::onServerTick);
     }
-    *//*?}*/
+    /*?}*/
 
 
 

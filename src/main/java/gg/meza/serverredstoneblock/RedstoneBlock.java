@@ -1,11 +1,11 @@
 package gg.meza.serverredstoneblock;
 
 /*? if fabric {*/
-/*import gg.meza.serverredstoneblock.fabric.RegistryHelper;
-*//*?}*/
-/*? if forge {*/
-import gg.meza.serverredstoneblock.forge.RegistryHelper;
+import gg.meza.serverredstoneblock.fabric.RegistryHelper;
 /*?}*/
+/*? if forge {*/
+/*import gg.meza.serverredstoneblock.forge.RegistryHelper;
+*//*?}*/
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
@@ -46,11 +46,11 @@ public class RedstoneBlock extends BlockWithEntity {
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
         /*? if forge {*/
-        if (type == RegistryHelper.REDSTONE_BLOCK_ENTITY.get()) {
-        /*?}*/
-        /*? if fabric {*/
-        /*if (type == RegistryHelper.REDSTONE_BLOCK_ENTITY) {
+        /*if (type == RegistryHelper.REDSTONE_BLOCK_ENTITY.get()) {
         *//*?}*/
+        /*? if fabric {*/
+        if (type == RegistryHelper.REDSTONE_BLOCK_ENTITY) {
+        /*?}*/
             return (BlockEntityTicker<T>) RedstoneBlockEntity::tick;
         }
 

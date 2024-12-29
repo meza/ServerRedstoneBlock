@@ -1,5 +1,5 @@
 /*? if forge {*/
-/*package gg.meza.serverredstoneblock.forge;
+package gg.meza.serverredstoneblock.forge;
 
 import gg.meza.serverredstoneblock.ServerRedstoneBlock;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -39,4 +39,4 @@ public class ServerEventListener {
     }
 }
 
-*//*?}*/
+/*?}*/

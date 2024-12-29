@@ -3,7 +3,7 @@ plugins {
     id("dev.architectury.loom") version "1.7.+" apply false
     id("me.modmuss50.mod-publish-plugin") version "0.8.+" apply false
 }
-stonecutter active "1.20.2-fabric" /* [SC] DO NOT EDIT */
+stonecutter active "1.20.2-forge" /* [SC] DO NOT EDIT */
 stonecutter.automaticPlatformConstants = true
 
 stonecutter registerChiseled tasks.register("chiseledBuild", stonecutter.chiseled) {

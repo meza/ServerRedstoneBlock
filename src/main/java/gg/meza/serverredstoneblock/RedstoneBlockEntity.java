@@ -1,20 +1,29 @@
 package gg.meza.serverredstoneblock;
 
+/*? if fabric {*/
+/*import gg.meza.serverredstoneblock.fabric.RegistryHelper;
+*//*?}*/
+/*? if forge {*/
+import gg.meza.serverredstoneblock.forge.RegistryHelper;
+/*?}*/
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import static gg.meza.serverredstoneblock.RedstoneBlock.POWER_STATE;
-import static gg.meza.serverredstoneblock.RedstoneBlock.powerState;
-import static gg.meza.serverredstoneblock.ServerRedstoneBlock.redstoneBlockEntityType;
 
 public class RedstoneBlockEntity extends BlockEntity {
 
     private int tickCount = 0;
 
     public RedstoneBlockEntity(BlockPos pos, BlockState state) {
-        super(redstoneBlockEntityType, pos, state);
+        /*? if forge {*/
+        super(RegistryHelper.REDSTONE_BLOCK_ENTITY.get(), pos, state);
+        /*?}*/
+        /*? if fabric {*/
+        /*super(RegistryHelper.REDSTONE_BLOCK_ENTITY, pos, state);
+        *//*?}*/
     }
 
     public void tick(World level, BlockPos blockPos, BlockState blockState) {
@@ -23,7 +32,7 @@ public class RedstoneBlockEntity extends BlockEntity {
         }
 
         if (tickCount++ == 20) {
-            level.setBlockState(blockPos, blockState.with(POWER_STATE, powerState), 2);
+            level.setBlockState(blockPos, blockState.with(POWER_STATE, ServerRedstoneBlock.currentState.getState()), 2);
             level.updateNeighbors(blockPos, level.getBlockState(blockPos).getBlock());
             tickCount = 0;
         }

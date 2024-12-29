@@ -1,12 +1,17 @@
 package gg.meza.serverredstoneblock;
 
+/*? if fabric {*/
+/*import gg.meza.serverredstoneblock.fabric.RegistryHelper;
+*//*?}*/
+/*? if forge {*/
+import gg.meza.serverredstoneblock.forge.RegistryHelper;
+/*?}*/
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.util.math.BlockPos;
@@ -16,20 +21,15 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
+import static gg.meza.serverredstoneblock.ServerRedstoneBlock.currentState;
 import static gg.meza.serverredstoneblock.ServerRedstoneBlock.telemetry;
 
 public class RedstoneBlock extends BlockWithEntity {
     public static final EnumProperty<ServerPowerState> POWER_STATE = EnumProperty.of("power_state", ServerPowerState.class);
     public static ServerPowerState powerState;
 
-    public static final Settings blockProps = Settings.create()
-            .mapColor(MapColor.RED)
-            .requiresTool()
-            .strength(5.0F, 6.0F)
-            .sounds(BlockSoundGroup.METAL);
-
-    public RedstoneBlock() {
-        super(blockProps);
+    public RedstoneBlock(Settings settings) {
+        super(settings);
         powerState = ServerPowerState.ON;
         setDefaultState(getDefaultState().with(POWER_STATE, powerState));
     }
@@ -45,7 +45,12 @@ public class RedstoneBlock extends BlockWithEntity {
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-        if (type == ServerRedstoneBlock.redstoneBlockEntityType) {
+        /*? if forge {*/
+        if (type == RegistryHelper.REDSTONE_BLOCK_ENTITY.get()) {
+        /*?}*/
+        /*? if fabric {*/
+        /*if (type == RegistryHelper.REDSTONE_BLOCK_ENTITY) {
+        *//*?}*/
             return (BlockEntityTicker<T>) RedstoneBlockEntity::tick;
         }
 
@@ -62,7 +67,7 @@ public class RedstoneBlock extends BlockWithEntity {
     }
 
     public int getWeakRedstonePower(BlockState state, BlockView world, BlockPos pos, Direction direction) {
-        return powerState.getValue();
+        return currentState.getState().getValue();
     }
 
     @Override
@@ -77,23 +82,6 @@ public class RedstoneBlock extends BlockWithEntity {
         if(!world.isClient()) {
             telemetry.redstoneBlockPlaced();
         }
-    }
-
-    private void switchTo(ServerPowerState state) {
-        powerState = state;
-        telemetry.redstoneToggled(powerState);
-    }
-
-    public void warning() {
-        switchTo(ServerPowerState.WARNING);
-    }
-
-    public void off() {
-        switchTo(ServerPowerState.OFF);
-    }
-
-    public void on() {
-        switchTo(ServerPowerState.ON);
     }
 
 }

@@ -1,61 +1,87 @@
 package gg.meza.serverredstoneblock;
 
 /*? if fabric {*/
+/*import gg.meza.serverredstoneblock.fabric.RegistryHelper;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.loader.impl.FabricLoaderImpl;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
+import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.Block;
+import net.minecraft.block.MapColor;
+import net.minecraft.sound.BlockSoundGroup;
+*//*?}*/
+
+/*? if forge {*/
+import gg.meza.serverredstoneblock.forge.RegistryHelper;
+import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.Block;
+import net.minecraft.block.MapColor;
+import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.item.ItemGroups;
-import net.minecraft.util.Identifier;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 /*?}*/
 
-
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.function.Supplier;
+
+import static gg.meza.serverredstoneblock.ServerRedstoneBlock.MOD_ID;
 import static net.minecraft.server.command.CommandManager.literal;
 
 /*? if fabric {*/
-public class ServerRedstoneBlock implements ModInitializer {
-/*?}*/
+/*public class ServerRedstoneBlock implements ModInitializer {
+*//*?}*/
 
 /*? if forge {*/
-/*public class ServerRedstoneBlock {
-*//*?}*/
+@Mod(MOD_ID)
+public class ServerRedstoneBlock {
+/*?}*/
 
     public static final String VERSION = "VERSION_REPL";
     public static final String blockName = "server_redstone_block";
     public static final String MOD_ID = "serverredstoneblock";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-    public static final RedstoneBlock block = new RedstoneBlock();
-
+    public static final CurrentState currentState = new CurrentState();
     public static final String COMMAND_BASE = "srs";
     public static Telemetry telemetry;
     private static int tick = 0;
     private static int MINUTE_IN_TICKS = 1200;
-
-    /*? if fabric {*/
-    public static Identifier redstoneBlockId = new Identifier(MOD_ID, blockName);
-    public static final BlockEntityType<RedstoneBlockEntity> redstoneBlockEntityType = Registry.register(
-            Registries.BLOCK_ENTITY_TYPE, redstoneBlockId, BlockEntityType.Builder.create(RedstoneBlockEntity::new, block).build(null)
-    );
-    /*?}*/
+    public static final Supplier<Block> blockSupplier = () -> new RedstoneBlock(AbstractBlock.Settings.create().mapColor(MapColor.RED)
+            .requiresTool()
+            .strength(5.0F, 6.0F)
+            .sounds(BlockSoundGroup.METAL));
 
     /*? if forge {*/
-    /*public static BlockEntityType<RedstoneBlockEntity> redstoneBlockEntityType;
-    public static void setEntityType(BlockEntityType<RedstoneBlockEntity> entityType) {
-        redstoneBlockEntityType = entityType;
+    public ServerRedstoneBlock() {
+        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        modEventBus.addListener(this::onCommonSetup);
+        modEventBus.addListener(this::addItemToCreativeTab);
+
+        RegistryHelper.register(modEventBus);
     }
-    *//*?}*/
+
+    private void onCommonSetup(FMLCommonSetupEvent event) {
+        ServerRedstoneBlock.init();
+    }
+
+    private void addItemToCreativeTab(BuildCreativeModeTabContentsEvent event) {
+        if(event.getTabKey() == ItemGroups.REDSTONE) {
+            event.accept(RegistryHelper.REDSTONE_BLOCK);
+        }
+    }
+    /*?}*/
+
 
     //COMMON
 
@@ -66,7 +92,7 @@ public class ServerRedstoneBlock implements ModInitializer {
 
     public static LiteralArgumentBuilder<ServerCommandSource> getOnCommand() {
         return literal(COMMAND_BASE).then(literal("on").executes(context -> {
-            block.on();
+            currentState.on();
             return 1;
         })).requires(source -> source.hasPermissionLevel(4));
     }
@@ -74,14 +100,14 @@ public class ServerRedstoneBlock implements ModInitializer {
     public static LiteralArgumentBuilder<ServerCommandSource> getOffCommand() {
         return literal(COMMAND_BASE).then(literal("off").executes(context -> {
             LOGGER.info("ServerRedstoneBlock off");
-            block.off();
+            currentState.off();
             return 1;
         })).requires(source -> source.hasPermissionLevel(4));
     }
 
     public static LiteralArgumentBuilder<ServerCommandSource> getWarningCommand() {
         return literal(COMMAND_BASE).then(literal("warning").executes(context -> {
-            block.warning();
+            currentState.warning();
             return 1;
         })).requires(source -> source.hasPermissionLevel(4));
     }
@@ -96,7 +122,7 @@ public class ServerRedstoneBlock implements ModInitializer {
     }
 
     public static void onServerStopping(MinecraftServer server) {
-        block.off();
+        currentState.off();
         telemetry.flush();
     }
 
@@ -108,11 +134,9 @@ public class ServerRedstoneBlock implements ModInitializer {
     }
 
     /*? if fabric {*/
-    @Override
+    /*@Override
     public void onInitialize() {
-        Registry.register(Registries.BLOCK, redstoneBlockId, block);
-        RedstoneBlockItem item = Registry.register(Registries.ITEM, redstoneBlockId, new RedstoneBlockItem(block));
-        ItemGroupEvents.modifyEntriesEvent(ItemGroups.REDSTONE).register(entries -> entries.add(item));
+        RegistryHelper.registerBlockAndItems();
         ServerRedstoneBlock.init();
         CommandRegistrationCallback.EVENT.register((dispatcher, registry, selection) -> {
             dispatcher.register(
@@ -134,7 +158,7 @@ public class ServerRedstoneBlock implements ModInitializer {
 
         ServerTickEvents.START_WORLD_TICK.register(ServerRedstoneBlock::onServerTick);
     }
-    /*?}*/
+    *//*?}*/
 
 
 

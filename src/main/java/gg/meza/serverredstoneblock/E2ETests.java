@@ -1,11 +1,15 @@
 package gg.meza.serverredstoneblock;
 
 import net.minecraft.block.RedstoneWireBlock;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.recipe.RecipeEntry;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import static gg.meza.serverredstoneblock.ServerRedstoneBlock.LOGGER;
+import java.util.Optional;
+
+import static gg.meza.serverredstoneblock.ServerRedstoneBlock.*;
+
 /*? if forge {*/
 /*import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.GameTestPrefix;
@@ -49,5 +53,97 @@ public class E2ETests {
             ctx.assertTrue(actual == 15, "Main redstone wire should be fully powered but is " + actual);
             ctx.complete();
         });
+    }
+
+    @GameTest(templateName = /*? if forge {*//*MOD_ID + ":"+*//*?}*/"multi-block")
+    public static void multiBlockStateTest(TestContext ctx) {
+        final BlockPos DUST1 = new BlockPos(1, 2, 0);
+        final BlockPos DUST2 = new BlockPos(1, 2, 2);
+        final BlockPos DUST3 = new BlockPos(1, 2, 4);
+
+        assertPower(ctx, DUST1, 15);
+        assertPower(ctx, DUST2, 15);
+        assertPower(ctx, DUST3, 15);
+
+        ServerRedstoneBlock.currentState.warning();
+
+        ctx.runAtTick(24, () -> {
+            assertPower(ctx, DUST1, 1);
+            assertPower(ctx, DUST2, 1);
+            assertPower(ctx, DUST3, 1);
+
+            ServerRedstoneBlock.currentState.off();
+        });
+
+        ctx.runAtTick(48, () -> {
+            assertPower(ctx, DUST1, 0);
+            assertPower(ctx, DUST2, 0);
+            assertPower(ctx, DUST3, 0);
+
+            ServerRedstoneBlock.currentState.on();
+        });
+
+        ctx.runAtTick(72, () -> {
+            assertPower(ctx, DUST1, 15);
+            assertPower(ctx, DUST2, 15);
+            assertPower(ctx, DUST3, 15);
+            ctx.complete();
+        });
+
+    }
+
+    @GameTest(templateName = /*? if forge {*//*MOD_ID + ":"+*//*?}*/"directions")
+    public static void directionality(TestContext ctx) {
+        final BlockPos MAIN_BLOCK = new BlockPos(2, 2, 2);
+        final BlockPos DUST1 = MAIN_BLOCK.east();
+        final BlockPos DUST2 = MAIN_BLOCK.west();
+        final BlockPos DUST3 = MAIN_BLOCK.north();
+        final BlockPos DUST4 = MAIN_BLOCK.south();
+
+        assertPower(ctx, DUST1, 15);
+        assertPower(ctx, DUST2, 15);
+        assertPower(ctx, DUST3, 15);
+        assertPower(ctx, DUST4, 15);
+
+        ServerRedstoneBlock.currentState.warning();
+
+        ctx.runAtTick(24, () -> {
+            assertPower(ctx, DUST1, 1);
+            assertPower(ctx, DUST2, 1);
+            assertPower(ctx, DUST3, 1);
+            assertPower(ctx, DUST4, 1);
+
+            ServerRedstoneBlock.currentState.off();
+        });
+
+        ctx.runAtTick(48, () -> {
+            assertPower(ctx, DUST1, 0);
+            assertPower(ctx, DUST2, 0);
+            assertPower(ctx, DUST3, 0);
+            assertPower(ctx, DUST4, 0);
+
+            ServerRedstoneBlock.currentState.on();
+        });
+
+        ctx.runAtTick(72, () -> {
+            assertPower(ctx, DUST1, 15);
+            assertPower(ctx, DUST2, 15);
+            assertPower(ctx, DUST3, 15);
+            assertPower(ctx, DUST4, 15);
+            ctx.complete();
+        });
+
+    }
+
+    @GameTest(templateName = /*? if forge {*//*MOD_ID + ":"+*//*?}*/"empty")
+    public static void isRecipePresent(TestContext ctx) {
+        Optional<RecipeEntry<?>> recipe = ctx.getWorld().getServer().getRecipeManager().get(new Identifier(MOD_ID,"server_redstone_block"));
+        ctx.assertTrue(recipe.isPresent(), String.format("Recipe is not present. Got %s", recipe));
+        ctx.complete();
+    }
+
+    private static void assertPower(TestContext ctx, BlockPos pos, int expected) {
+        Integer actual = ctx.getBlockState(pos).get(RedstoneWireBlock.POWER);
+        ctx.assertTrue(actual == expected, String.format("Block at %s should have power %d but has %d", pos, expected, actual));
     }
 }

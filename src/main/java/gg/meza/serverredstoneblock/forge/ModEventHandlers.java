@@ -1,5 +1,5 @@
 /*? if forge {*/
-/*package gg.meza.serverredstoneblock.forge;
+package gg.meza.serverredstoneblock.forge;
 
 import gg.meza.serverredstoneblock.E2ETests;
 import gg.meza.serverredstoneblock.ServerRedstoneBlock;
@@ -25,4 +25,4 @@ public class ModEventHandlers {
 
 }
 
-*//*?}*/
+/*?}*/

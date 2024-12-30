@@ -1,5 +1,5 @@
 /*? if fabric {*/
-package gg.meza.serverredstoneblock.fabric;
+/*package gg.meza.serverredstoneblock.fabric;
 
 import gg.meza.serverredstoneblock.RedstoneBlockEntity;
 import gg.meza.serverredstoneblock.RedstoneBlockItem;
@@ -45,4 +45,4 @@ public class RegistryHelper {
     }
 }
 
-/*?}*/
+*//*?}*/

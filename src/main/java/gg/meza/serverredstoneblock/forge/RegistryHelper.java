@@ -1,5 +1,5 @@
 /*? if forge {*/
-/*package gg.meza.serverredstoneblock.forge;
+package gg.meza.serverredstoneblock.forge;
 
 import gg.meza.serverredstoneblock.E2ETests;
 import gg.meza.serverredstoneblock.RedstoneBlockEntity;
@@ -50,4 +50,4 @@ public class RegistryHelper {
         BLOCK_ENTITY_TYPE.register(modEventBus);
     }
 }
-*//*?}*/
+/*?}*/

@@ -11,13 +11,13 @@ import java.util.Optional;
 import static gg.meza.serverredstoneblock.ServerRedstoneBlock.*;
 
 /*? if forge {*/
-/*import net.minecraftforge.gametest.GameTestHolder;
+import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.GameTestPrefix;
 
 import static gg.meza.serverredstoneblock.ServerRedstoneBlock.MOD_ID;
 
 @GameTestHolder(MOD_ID)
-*//*?}*/
+/*?}*/
 public class E2ETests {
     public static final BlockPos TEST_REDSTONE_BLOCK = new BlockPos(1, 2, 2);
     public static final BlockPos MAIN_REDSTONE = new BlockPos(2, 2, 2);

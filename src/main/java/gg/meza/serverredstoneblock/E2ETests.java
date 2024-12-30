@@ -27,7 +27,7 @@ public class E2ETests {
         LOGGER.info("E2E Tests Initialized");
     }
 
-    @GameTest(templateName = /*? if forge {*//*MOD_ID + ":"+*//*?}*/"state-test")
+    @GameTest(templateName = MOD_ID+":state-test")
     public static void stateTest(TestContext ctx) {
         Integer power = ctx.getBlockState(MAIN_REDSTONE).get(RedstoneWireBlock.POWER);
         ctx.assertTrue(power == 15, "Main redstone wire should be powered but is " + power);
@@ -55,7 +55,7 @@ public class E2ETests {
         });
     }
 
-    @GameTest(templateName = /*? if forge {*//*MOD_ID + ":"+*//*?}*/"multi-block")
+    @GameTest(templateName =  MOD_ID+":multi-block")
     public static void multiBlockStateTest(TestContext ctx) {
         final BlockPos DUST1 = new BlockPos(1, 2, 0);
         final BlockPos DUST2 = new BlockPos(1, 2, 2);
@@ -92,7 +92,7 @@ public class E2ETests {
 
     }
 
-    @GameTest(templateName = /*? if forge {*//*MOD_ID + ":"+*//*?}*/"directions")
+    @GameTest(templateName =  MOD_ID+":directions")
     public static void directionality(TestContext ctx) {
         final BlockPos MAIN_BLOCK = new BlockPos(2, 2, 2);
         final BlockPos DUST1 = MAIN_BLOCK.east();
@@ -135,7 +135,7 @@ public class E2ETests {
 
     }
 
-    @GameTest(templateName = /*? if forge {*//*MOD_ID + ":"+*//*?}*/"empty")
+    @GameTest(templateName =  MOD_ID+":empty")
     public static void isRecipePresent(TestContext ctx) {
         Optional<RecipeEntry<?>> recipe = ctx.getWorld().getServer().getRecipeManager().get(new Identifier(MOD_ID,"server_redstone_block"));
         ctx.assertTrue(recipe.isPresent(), String.format("Recipe is not present. Got %s", recipe));

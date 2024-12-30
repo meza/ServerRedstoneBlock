@@ -64,7 +64,7 @@ jobs:
       - name: "ℹ️ Needs Release?"
         run: echo "Needs release published? ${{ steps.get-next-version.outputs.new-release-published == 'true' }}"
 
-      - name: "🏗️ Build & Release to GitHub"
+      - name: "🏗️ Build, Test & Release"
         if: ${{ steps.get-next-version.outputs.new-release-published == 'true' }}
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
@@ -78,7 +78,7 @@ jobs:
 
       - name: "🧪 Run Dev Build"
         if: ${{ steps.get-next-version.outputs.new-release-published != 'true' }}
-        run: ./gradlew chiseledBuild
+        run: ./gradlew chiseledBuildAndCollect chiseledTestE2E --no-daemon
 
       - name: "🕵️‍♂️ Collect jars"
         uses: actions/upload-artifact@v4

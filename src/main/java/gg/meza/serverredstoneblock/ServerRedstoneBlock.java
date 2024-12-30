@@ -30,6 +30,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,6 +62,12 @@ public class ServerRedstoneBlock {
             .requiresTool()
             .strength(5.0F, 6.0F)
             .sounds(BlockSoundGroup.METAL));
+
+    /*? if <1.21 {*/
+    /*public static Identifier MAIN_ID = new Identifier(ServerRedstoneBlock.MOD_ID, blockName);
+    *//*?} else {*/
+    public static Identifier MAIN_ID = Identifier.of(ServerRedstoneBlock.MOD_ID, blockName);
+    /*?}*/
 
     /*? if forge {*/
     public ServerRedstoneBlock() {

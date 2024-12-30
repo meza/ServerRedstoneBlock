@@ -41,6 +41,7 @@ group = mod.group
 
 val isBeta = "next" in version.toString()
 
+val testserverDir = "../../run/testserver/${loader}"
 
 base { archivesName.set("${mod.id}-${loader}") }
 
@@ -80,22 +81,13 @@ loom {
         create("gameTestServer") {
             server()
             name("Game Test Server")
+            runDir = testserverDir
             if (isFabric) {
-                runDir = "../../run/testserver/fabric"
                 vmArg("-Dfabric-api.gametest")
                 vmArg("-Dfabric-api.gametest.report-file=${rootProject.file("build/junit.xml")}");
             }
             if (isForge) {
-                runDir = "../../run/testserver/forge"
-                property("forge.logging.markers", "REGISTRIES")
-//                property("forge.logging.console.level", "debug")
-                val includeTests = stonecutter.eval(stonecutter.current.version, ">1.20.2")
-
-                if (includeTests) {
-                    property("forge.enabledGameTestNamespaces", "serverredstoneblock")
-                } else {
-                    property("forge.enabledGameTestNamespaces", "serverredstoneblock-disabled")
-                }
+                property("forge.enabledGameTestNamespaces", "serverredstoneblock-disabled")
                 property("forge.enableGameTest", "true")
                 property("forge.gameTestServer", "true")
             }
@@ -111,13 +103,32 @@ loom {
     }
 }
 
-configurations.configureEach {
-    resolutionStrategy.force("net.sf.jopt-simple:jopt-simple:5.0.4")
-}
+if (isForge) {
+    configurations.configureEach {
+        resolutionStrategy.force("net.sf.jopt-simple:jopt-simple:5.0.4")
+    }
 
+//    val copyGameTestResources = tasks.register<Copy>("copyGameTestResources") {
+//        from(rootProject.file("src/main/resources/data/${mod.id}/gametest/structure"))
+//        into("${testserverDir}/gameteststructures")
+//    }
+//
+//    tasks.named<JavaExec>("runGameTestServer") {
+//        dependsOn(copyGameTestResources)
+//    }
+
+}
 dependencies {
     minecraft("com.mojang:minecraft:$minecraftVersion")
-    mappings("net.fabricmc:yarn:${mod.prop("yarn_mappings")}:v2")
+    if (!isNeoforge) {
+        mappings("net.fabricmc:yarn:${mod.prop("yarn_mappings")}:v2")
+    } else {
+        mappings(loom.layered {
+            mappings("net.fabricmc:yarn:${mod.prop("yarn_mappings")}:v2")
+            mappings("dev.architectury:yarn-mappings-patch-neoforge:${mod.prop("yarn_mappings_neoforge_patch")}")
+        })
+    }
+
     if (isForge) {
         println("Adding Forge dependencies")
         "forge"("net.minecraftforge:forge:${mod.prop("forge_version")}")
@@ -127,6 +138,10 @@ dependencies {
         modImplementation("net.fabricmc:fabric-loader:${mod.prop("loader_version")}")
         modApi("net.fabricmc.fabric-api:fabric-api:${mod.prop("fabric_version")}")
         modApi("net.fabricmc.fabric-api:fabric-gametest-api-v1:${mod.prop("fabric_version")}")
+    }
+
+    if (isNeoforge) {
+        "neoForge"("net.neoforged:neoforge:${mod.prop("neoforge_version")}")
     }
 }
 
@@ -159,6 +174,9 @@ if (stonecutter.current.isActive) {
 }
 
 tasks.processResources {
+    outputs.cacheIf { false }
+    val oldResources = stonecutter.eval(stonecutter.current.version, "<1.21")
+
     val map = mapOf(
         "id" to mod.id,
         "name" to mod.name,
@@ -169,6 +187,46 @@ tasks.processResources {
     filesMatching("fabric.mod.json") { expand(map) }
     filesMatching("META-INF/mods.toml") { expand(map) }
     filesMatching("META-INF/neoforge.mods.toml") { expand(map) }
+
+    val resourceChanges = mapOf(
+        "itemIdentifier" to if (oldResources) "item" else "id"
+    )
+
+    filesMatching("data/**/*.json") {
+        expand(resourceChanges)
+    }
+
+    if (oldResources) {
+        println("Using old resource system")
+
+        val renameMappings = mapOf(
+            "data/minecraft/tags/block" to "data/minecraft/tags/blocks",
+            "data/${mod.id}/advancement/recipe" to "data/${mod.id}/advancement/recipes",
+            "data/${mod.id}/advancement" to "data/${mod.id}/advancements",
+            "data/${mod.id}/loot_table" to "data/${mod.id}/loot_tables",
+            "data/${mod.id}/recipe" to "data/${mod.id}/recipes",
+            "data/${mod.id}/gametest/structure" to "data/${mod.id}/gametest/structures"
+        )
+
+        renameMappings.forEach { (source, destination) ->
+            filesMatching("$source/**") {
+                path = path.replace(source, destination)
+            }
+        }
+
+        doLast {
+            val buildResourcesDir = layout.buildDirectory.dir("resources/main").get().asFile
+
+            if (buildResourcesDir.exists()) {
+                println("Cleaning up empty directories in ${buildResourcesDir.path}")
+
+                // Recursively delete empty directories
+                buildResourcesDir.walkBottomUp().filter { it.isDirectory && it.listFiles().isNullOrEmpty() }.forEach { dir ->
+                    dir.delete()
+                }
+            }
+        }
+    }
 }
 
 stonecutter {
@@ -237,4 +295,14 @@ publishMods {
     }
 
     dryRun = providers.environmentVariable("DO_PUBLISH").getOrElse("true").toBoolean()
+}
+
+afterEvaluate {
+    tasks.runServer {
+        classpath = classpath.filter { !it.toString().contains("\\org.lwjgl\\") }
+    }
+
+    tasks.named<JavaExec>("runGameTestServer") {
+        classpath = classpath.filter { !it.toString().contains("\\org.lwjgl\\") }
+    }
 }

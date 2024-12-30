@@ -15,7 +15,9 @@ public class RedstoneBlockItem extends BlockItem {
         super(block, itemProps);
     }
 
-    @Override
+    /*? if <1.21 {*/
+    /*@Override
+    *//*?}*/
     public void onCraft(ItemStack stack, World world, PlayerEntity player) {
         if (!world.isClient()) {
             telemetry.redstoneBlockCrafted();

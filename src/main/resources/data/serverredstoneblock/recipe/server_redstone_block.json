@@ -14,6 +14,6 @@
     }
   },
   "result": {
-    "item": "serverredstoneblock:server_redstone_block"
+    "${itemIdentifier}": "serverredstoneblock:server_redstone_block"
   }
 }

@@ -2,17 +2,18 @@ package gg.meza.serverredstoneblock;
 
 import net.minecraft.block.RedstoneWireBlock;
 import net.minecraft.recipe.RecipeEntry;
+import net.minecraft.recipe.RecipeManager;
 import net.minecraft.test.GameTest;
+import net.minecraft.test.StructureTestUtil;
 import net.minecraft.test.TestContext;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+
 import java.util.Optional;
 
 import static gg.meza.serverredstoneblock.ServerRedstoneBlock.*;
 
 /*? if forge {*/
 import net.minecraftforge.gametest.GameTestHolder;
-import net.minecraftforge.gametest.GameTestPrefix;
 
 import static gg.meza.serverredstoneblock.ServerRedstoneBlock.MOD_ID;
 
@@ -22,52 +23,55 @@ public class E2ETests {
     public static final BlockPos TEST_REDSTONE_BLOCK = new BlockPos(1, 2, 2);
     public static final BlockPos MAIN_REDSTONE = new BlockPos(2, 2, 2);
     public static final BlockPos SECONDARY_REDSTONE = new BlockPos(3, 2, 2);
+    public static final int FIRST_TICK = 22;
+    public static final int SECOND_TICK = 44;
+    public static final int THIRD_TICK = 66;
+    public static final int FOURTH_TICK = 88;
 
-    public E2ETests() {
-        LOGGER.info("E2E Tests Initialized");
-    }
-
-    @GameTest(templateName = MOD_ID+":state-test")
+    @GameTest(templateName = MOD_ID + ":state-test", batchId = "state-test")
     public static void stateTest(TestContext ctx) {
-        Integer power = ctx.getBlockState(MAIN_REDSTONE).get(RedstoneWireBlock.POWER);
-        ctx.assertTrue(power == 15, "Main redstone wire should be powered but is " + power);
+        ServerRedstoneBlock.currentState.on();
 
-        ServerRedstoneBlock.currentState.warning();
+        ctx.runAtTick(FIRST_TICK, () -> {
+            assertPower(ctx, MAIN_REDSTONE, 15);
+            ServerRedstoneBlock.currentState.warning();
+        });
 
-        ctx.runAtTick(24, () -> {
-            Integer actual = ctx.getBlockState(MAIN_REDSTONE).get(RedstoneWireBlock.POWER);
-            ctx.assertTrue(actual == 1, "Main redstone wire should be in a warning state but is " + actual);
-
+        ctx.runAtTick(SECOND_TICK, () -> {
+            assertPower(ctx, MAIN_REDSTONE, 1);
             ServerRedstoneBlock.currentState.off();
         });
 
-        ctx.runAtTick(48, () -> {
-            Integer actual = ctx.getBlockState(MAIN_REDSTONE).get(RedstoneWireBlock.POWER);
-            ctx.assertTrue(actual == 0, "Main redstone wire should not be powered but is " + actual);
+        ctx.runAtTick(THIRD_TICK, () -> {
+            assertPower(ctx, MAIN_REDSTONE, 0);
 
             ServerRedstoneBlock.currentState.on();
         });
 
-        ctx.runAtTick(72, () -> {
-            Integer actual = ctx.getBlockState(MAIN_REDSTONE).get(RedstoneWireBlock.POWER);
-            ctx.assertTrue(actual == 15, "Main redstone wire should be fully powered but is " + actual);
+        ctx.runAtTick(FOURTH_TICK, () -> {
+            assertPower(ctx, MAIN_REDSTONE, 15);
+            ServerRedstoneBlock.currentState.on();
             ctx.complete();
         });
     }
 
-    @GameTest(templateName =  MOD_ID+":multi-block")
+    @GameTest(templateName = MOD_ID + ":multi-block", batchId = "multi-block")
     public static void multiBlockStateTest(TestContext ctx) {
+        ServerRedstoneBlock.currentState.on();
+
         final BlockPos DUST1 = new BlockPos(1, 2, 0);
         final BlockPos DUST2 = new BlockPos(1, 2, 2);
         final BlockPos DUST3 = new BlockPos(1, 2, 4);
 
-        assertPower(ctx, DUST1, 15);
-        assertPower(ctx, DUST2, 15);
-        assertPower(ctx, DUST3, 15);
+        ctx.runAtTick(FIRST_TICK, () -> {
+            assertPower(ctx, DUST1, 15);
+            assertPower(ctx, DUST2, 15);
+            assertPower(ctx, DUST3, 15);
 
-        ServerRedstoneBlock.currentState.warning();
+            ServerRedstoneBlock.currentState.warning();
+        });
 
-        ctx.runAtTick(24, () -> {
+        ctx.runAtTick(SECOND_TICK, () -> {
             assertPower(ctx, DUST1, 1);
             assertPower(ctx, DUST2, 1);
             assertPower(ctx, DUST3, 1);
@@ -75,7 +79,7 @@ public class E2ETests {
             ServerRedstoneBlock.currentState.off();
         });
 
-        ctx.runAtTick(48, () -> {
+        ctx.runAtTick(THIRD_TICK, () -> {
             assertPower(ctx, DUST1, 0);
             assertPower(ctx, DUST2, 0);
             assertPower(ctx, DUST3, 0);
@@ -83,16 +87,17 @@ public class E2ETests {
             ServerRedstoneBlock.currentState.on();
         });
 
-        ctx.runAtTick(72, () -> {
+        ctx.runAtTick(FOURTH_TICK, () -> {
             assertPower(ctx, DUST1, 15);
             assertPower(ctx, DUST2, 15);
             assertPower(ctx, DUST3, 15);
+            ServerRedstoneBlock.currentState.on();
             ctx.complete();
         });
 
     }
 
-    @GameTest(templateName =  MOD_ID+":directions")
+    @GameTest(templateName = MOD_ID + ":directions", batchId = "directions")
     public static void directionality(TestContext ctx) {
         final BlockPos MAIN_BLOCK = new BlockPos(2, 2, 2);
         final BlockPos DUST1 = MAIN_BLOCK.east();
@@ -100,14 +105,18 @@ public class E2ETests {
         final BlockPos DUST3 = MAIN_BLOCK.north();
         final BlockPos DUST4 = MAIN_BLOCK.south();
 
-        assertPower(ctx, DUST1, 15);
-        assertPower(ctx, DUST2, 15);
-        assertPower(ctx, DUST3, 15);
-        assertPower(ctx, DUST4, 15);
+        ServerRedstoneBlock.currentState.on();
 
-        ServerRedstoneBlock.currentState.warning();
+        ctx.runAtTick(FIRST_TICK, () -> {
+            assertPower(ctx, DUST1, 15);
+            assertPower(ctx, DUST2, 15);
+            assertPower(ctx, DUST3, 15);
+            assertPower(ctx, DUST4, 15);
 
-        ctx.runAtTick(24, () -> {
+            ServerRedstoneBlock.currentState.warning();
+        });
+
+        ctx.runAtTick(SECOND_TICK, () -> {
             assertPower(ctx, DUST1, 1);
             assertPower(ctx, DUST2, 1);
             assertPower(ctx, DUST3, 1);
@@ -116,7 +125,7 @@ public class E2ETests {
             ServerRedstoneBlock.currentState.off();
         });
 
-        ctx.runAtTick(48, () -> {
+        ctx.runAtTick(THIRD_TICK, () -> {
             assertPower(ctx, DUST1, 0);
             assertPower(ctx, DUST2, 0);
             assertPower(ctx, DUST3, 0);
@@ -125,19 +134,21 @@ public class E2ETests {
             ServerRedstoneBlock.currentState.on();
         });
 
-        ctx.runAtTick(72, () -> {
+        ctx.runAtTick(FOURTH_TICK, () -> {
             assertPower(ctx, DUST1, 15);
             assertPower(ctx, DUST2, 15);
             assertPower(ctx, DUST3, 15);
             assertPower(ctx, DUST4, 15);
+            ServerRedstoneBlock.currentState.on();
             ctx.complete();
         });
 
     }
 
-    @GameTest(templateName =  MOD_ID+":empty")
+    @GameTest(templateName = MOD_ID+":"+"empty")
     public static void isRecipePresent(TestContext ctx) {
-        Optional<RecipeEntry<?>> recipe = ctx.getWorld().getServer().getRecipeManager().get(new Identifier(MOD_ID,"server_redstone_block"));
+        RecipeManager recipeManager = ctx.getWorld().getServer().getRecipeManager();
+        Optional<RecipeEntry<?>> recipe = recipeManager.get(MAIN_ID);
         ctx.assertTrue(recipe.isPresent(), String.format("Recipe is not present. Got %s", recipe));
         ctx.complete();
     }

@@ -18,11 +18,22 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 /*?}*/
 
+/*? if neoforge {*/
+/*import gg.meza.serverredstoneblock.neoforge.RegistryHelper;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+*//*?}*/
+
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.MapColor;
-import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.item.ItemGroups;
+import net.minecraft.sound.BlockSoundGroup;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
@@ -31,7 +42,6 @@ import net.minecraft.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Field;
 import java.util.function.Supplier;
 
 import static gg.meza.serverredstoneblock.ServerRedstoneBlock.MOD_ID;
@@ -41,7 +51,7 @@ import static net.minecraft.server.command.CommandManager.literal;
 /*public class ServerRedstoneBlock implements ModInitializer {
 *//*?}*/
 
-/*? if forge {*/
+/*? if forgeLike {*/
 @Mod(MOD_ID)
 public class ServerRedstoneBlock {
 /*?}*/
@@ -75,10 +85,6 @@ public class ServerRedstoneBlock {
         RegistryHelper.register(modEventBus);
     }
 
-    private void onCommonSetup(FMLCommonSetupEvent event) {
-        ServerRedstoneBlock.init();
-    }
-
     private void addItemToCreativeTab(BuildCreativeModeTabContentsEvent event) {
         if(event.getTabKey() == ItemGroups.REDSTONE) {
             event.accept(RegistryHelper.REDSTONE_BLOCK);
@@ -87,6 +93,29 @@ public class ServerRedstoneBlock {
 
     /*?}*/
 
+    /*? if neoforge {*/
+    /*public ServerRedstoneBlock(IEventBus modEventBus, ModContainer modContainer) {
+        modEventBus.addListener(this::onCommonSetup);
+        modEventBus.addListener(this::addItemToCreativeTab);
+        RegistryHelper.register(modEventBus);
+
+        ServerRedstoneBlock.init();
+
+    }
+
+    private void addItemToCreativeTab(BuildCreativeModeTabContentsEvent event) {
+        if(event.getTabKey() == ItemGroups.REDSTONE) {
+            event.add(RegistryHelper.REDSTONE_BLOCK);
+        }
+    }
+
+    *//*?}*/
+
+    /*? if forgeLike {*/
+    private void onCommonSetup(FMLCommonSetupEvent event) {
+        ServerRedstoneBlock.init();
+    }
+    /*?}*/
 
     //COMMON
 

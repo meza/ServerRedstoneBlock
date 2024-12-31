@@ -51,6 +51,7 @@ stonecutter {
     const("fabric", loader == "fabric")
     const("forge", loader == "forge")
     const("neoforge", loader == "neoforge")
+    const("forgeLike", isForgeLike)
     val j21 = eval(minecraftVersion, ">=1.20.6")
     java {
 //        withSourcesJar()
@@ -114,7 +115,15 @@ loom {
                 // Logging
 //                property("forge.logging.console.level", "debug")
 //                property("forge.logging.markers", "REGISTRIES")
+            }
 
+            if (isNeoforge) {
+                property("neoforge.enabledGameTestNamespaces", mod.id)
+                property("neoforge.enableGameTest", "true")
+                property("neoforge.gameTestServer", "true")
+                // Logging
+//                property("neoforge.logging.console.level", "debug")
+//                property("neoforge.logging.markers", "REGISTRIES")
             }
         }
     }
@@ -196,6 +205,21 @@ tasks.processResources {
     filesMatching("fabric.mod.json") { expand(map) }
     filesMatching("META-INF/mods.toml") { expand(map) }
     filesMatching("META-INF/neoforge.mods.toml") { expand(map) }
+
+    if (isNeoforge) {
+        exclude("fabric.mod.json")
+        exclude("META-INF/mods.toml")
+    }
+
+    if (isForge) {
+        exclude("fabric.mod.json")
+        exclude("META-INF/neoforge.mods.toml")
+    }
+
+    if (isFabric) {
+        exclude("META-INF/neoforge.mods.toml")
+        exclude("META-INF/mods.toml")
+    }
 
     val resourceChanges = mapOf(
         "itemIdentifier" to if (oldResources) "item" else "id"

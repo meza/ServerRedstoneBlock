@@ -5,9 +5,17 @@ package gg.meza.serverredstoneblock;
  *//*?}*/
 
 /*? if forge {*/
-
 import gg.meza.serverredstoneblock.forge.RegistryHelper;
-/*?}*/
+ /*?}*/
+
+/*? if neoforge {*/
+
+/*import gg.meza.serverredstoneblock.neoforge.RegistryHelper;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.RegisterGameTestsEvent;
+import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+*//*?}*/
 
 import net.minecraft.block.*;
 import net.minecraft.recipe.RecipeEntry;
@@ -15,6 +23,7 @@ import net.minecraft.recipe.RecipeManager;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
 import net.minecraft.util.math.BlockPos;
+
 
 import java.util.Optional;
 
@@ -25,19 +34,29 @@ import net.minecraftforge.event.RegisterGameTestsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.gametest.GameTestHolder;
+/*?}*/
 
+/*? if forge {*/
 import static gg.meza.serverredstoneblock.ServerRedstoneBlock.MOD_ID;
 
 @GameTestHolder(MOD_ID)
 /*?}*/
+/*? if neoforge {*/
+/*@PrefixGameTestTemplate(value = false)
+*//*?}*/
 public class E2ETests {
     public static final int FIRST_TICK = 40;
     public static final int SECOND_TICK = 60;
     public static final int THIRD_TICK = 80;
     public static final int FOURTH_TICK = 100;
 
+    /*? if forgeLike {*/
     /*? if forge {*/
     @Mod.EventBusSubscriber(modid = ServerRedstoneBlock.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+     /*?}*/
+    /*? if neoforge {*/
+    /*@EventBusSubscriber(modid = ServerRedstoneBlock.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
+    *//*?}*/
     public static final class Register {
         @SubscribeEvent
         public static void registerGameTest(RegisterGameTestsEvent event) {
@@ -47,9 +66,10 @@ public class E2ETests {
     }
     /*?}*/
 
+
     private static void startTicking(TestContext ctx, BlockPos blockPos) {
         ctx.waitAndRun(1, () -> {
-            /*? if forge {*/
+            /*? if forgeLike {*/
             Block testBlock = RegistryHelper.REDSTONE_BLOCK.get();
             /*?}*/
 
@@ -60,7 +80,16 @@ public class E2ETests {
         });
     }
 
-    @GameTest(templateName = MOD_ID + ":state-test", batchId = "state-test", tickLimit = 200)
+    @GameTest(
+            /*? if neoforge {*/
+            /*templateNamespace = MOD_ID,
+            templateName = "state-test",
+            *//*?} else {*/
+            templateName = MOD_ID + ":state-test",
+            /*?}*/
+            batchId = "state-test",
+            tickLimit = 200
+    )
     public static void stateTest(TestContext ctx) {
         BlockPos MAIN_REDSTONE = new BlockPos(2, 2, 2);
         ServerRedstoneBlock.currentState.on();
@@ -91,7 +120,16 @@ public class E2ETests {
         });
     }
 
-    @GameTest(templateName = MOD_ID + ":multi-block", batchId = "multi-block", tickLimit = 200)
+    @GameTest(
+            /*? if neoforge {*/
+            /*templateNamespace = MOD_ID,
+            templateName = "multi-block",
+            *//*?} else {*/
+            templateName = MOD_ID + ":multi-block",
+            /*?}*/
+            batchId = "multi-block",
+            tickLimit = 200
+    )
     public static void multiBlockStateTest(TestContext ctx) {
         ServerRedstoneBlock.currentState.on();
         BlockPos first = new BlockPos(0, 2, 0);
@@ -140,7 +178,16 @@ public class E2ETests {
 
     }
 
-    @GameTest(templateName = MOD_ID + ":directions", batchId = "directions", tickLimit = 200)
+    @GameTest(
+            /*? if neoforge {*/
+            /*templateNamespace = MOD_ID,
+            templateName = "directions",
+            *//*?} else {*/
+            templateName = MOD_ID + ":directions",
+            /*?}*/
+            batchId = "directions",
+            tickLimit = 200
+    )
     public static void directionality(TestContext ctx) {
         final BlockPos MAIN_BLOCK = new BlockPos(2, 2, 2);
         final BlockPos DUST1 = MAIN_BLOCK.east();
@@ -194,7 +241,14 @@ public class E2ETests {
 
     }
 
-    @GameTest(templateName = MOD_ID + ":" + "empty")
+    @GameTest(
+            /*? if neoforge {*/
+            /*templateNamespace = MOD_ID,
+            templateName = "empty"
+            *//*?} else {*/
+            templateName = MOD_ID + ":empty"
+            /*?}*/
+    )
     public static void isRecipePresent(TestContext ctx) {
         RecipeManager recipeManager = ctx.getWorld().getServer().getRecipeManager();
         Optional<RecipeEntry<?>> recipe = recipeManager.get(MAIN_ID);

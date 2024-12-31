@@ -8,7 +8,6 @@ import com.mojang.serialization.MapCodec;
 /*import gg.meza.serverredstoneblock.fabric.RegistryHelper;
 *//*?}*/
 /*? if forge {*/
-import gg.meza.serverredstoneblock.forge.RegistryHelper;
 /*?}*/
 import net.minecraft.block.*;
 import net.minecraft.entity.LivingEntity;
@@ -32,6 +31,7 @@ public class RedstoneBlock extends Block {
     public static final MapCodec<RedstoneBlock> CODEC = createCodec(RedstoneBlock::new);
     /*?}*/
     public static final EnumProperty<ServerPowerState> POWER_STATE = EnumProperty.of("power_state", ServerPowerState.class);
+    public static final int TICK_DELAY_BETWEEN_CHECKS = 20;
     public static ServerPowerState powerState;
 
     public RedstoneBlock(Settings settings) {
@@ -71,20 +71,17 @@ public class RedstoneBlock extends Block {
     }
 
     public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-        ServerRedstoneBlock.LOGGER.info("Scheduled tick" + pos);
         world.setBlockState(pos, state.with(POWER_STATE, currentState.getState()), 3);
         world.updateNeighbors(pos, world.getBlockState(pos).getBlock());
         if(state.getBlock() == this) {
-            world.scheduleBlockTick(pos, this, 20);
+            world.scheduleBlockTick(pos, this, TICK_DELAY_BETWEEN_CHECKS);
         }
     }
 
     @Override
     public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
-        ServerRedstoneBlock.LOGGER.info("Redstone block placed on the client");
         if(!world.isClient()) {
-            world.scheduleBlockTick(pos, this, 20);
-            ServerRedstoneBlock.LOGGER.info("Redstone block placed on the server");
+            world.scheduleBlockTick(pos, this, TICK_DELAY_BETWEEN_CHECKS);
             telemetry.redstoneBlockPlaced();
         }
     }

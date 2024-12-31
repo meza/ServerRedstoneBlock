@@ -10,16 +10,16 @@ import net.fabricmc.loader.impl.FabricLoaderImpl;
 *//*?}*/
 
 /*? if forge {*/
-import gg.meza.serverredstoneblock.forge.RegistryHelper;
+/*import gg.meza.serverredstoneblock.forge.RegistryHelper;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-/*?}*/
+*//*?}*/
 
 /*? if neoforge {*/
-/*import gg.meza.serverredstoneblock.neoforge.RegistryHelper;
+import gg.meza.serverredstoneblock.neoforge.RegistryHelper;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -27,7 +27,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-*//*?}*/
+/*?}*/
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -77,7 +77,7 @@ public class ServerRedstoneBlock {
     /*?}*/
 
     /*? if forge {*/
-    public ServerRedstoneBlock() {
+    /*public ServerRedstoneBlock() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::onCommonSetup);
         modEventBus.addListener(this::addItemToCreativeTab);
@@ -91,10 +91,10 @@ public class ServerRedstoneBlock {
         }
     }
 
-    /*?}*/
+    *//*?}*/
 
     /*? if neoforge {*/
-    /*public ServerRedstoneBlock(IEventBus modEventBus, ModContainer modContainer) {
+    public ServerRedstoneBlock(IEventBus modEventBus, ModContainer modContainer) {
         modEventBus.addListener(this::onCommonSetup);
         modEventBus.addListener(this::addItemToCreativeTab);
         RegistryHelper.register(modEventBus);
@@ -109,7 +109,7 @@ public class ServerRedstoneBlock {
         }
     }
 
-    *//*?}*/
+    /*?}*/
 
     /*? if forgeLike {*/
     private void onCommonSetup(FMLCommonSetupEvent event) {

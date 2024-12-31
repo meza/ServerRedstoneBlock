@@ -1,5 +1,5 @@
 /*? if forge {*/
-package gg.meza.serverredstoneblock.forge;
+/*package gg.meza.serverredstoneblock.forge;
 
 import gg.meza.serverredstoneblock.RedstoneBlockItem;
 import net.minecraft.block.Block;
@@ -42,4 +42,4 @@ public class RegistryHelper {
         ITEMS.register(modEventBus);
     }
 }
-/*?}*/
+*//*?}*/

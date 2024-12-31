@@ -4,8 +4,8 @@
 import gg.meza.serverredstoneblock.RedstoneBlockItem;
 import gg.meza.serverredstoneblock.ServerRedstoneBlock;
 /^? if 1.20.2 {^/
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-/^?}^/
+/^import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+^//^?}^/
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntityType;
@@ -25,22 +25,22 @@ public class RegistryHelper {
     public static Block registerBlock(String name, Block block, Class<? extends BlockItem> blockItemClass) {
         registerBlockItem(name, block, blockItemClass);
         /^? if <1.21 {^/
-        Identifier id = new Identifier(ServerRedstoneBlock.MOD_ID, name);
-        /^?} else {^/
-        /^Identifier id = Identifier.of(ServerRedstoneBlock.MOD_ID, name);
-        ^//^?}^/
+        /^Identifier id = new Identifier(ServerRedstoneBlock.MOD_ID, name);
+        ^//^?} else {^/
+        Identifier id = Identifier.of(ServerRedstoneBlock.MOD_ID, name);
+        /^?}^/
         return Registry.register(Registries.BLOCK, id, block);
     }
 
     public static Item registerBlockItem(String name, Block block, Class<? extends BlockItem> blockItemClass) {
         /^? if <1.21 {^/
-        Identifier id = new Identifier(ServerRedstoneBlock.MOD_ID, name);
+        /^Identifier id = new Identifier(ServerRedstoneBlock.MOD_ID, name);
         FabricItemSettings settings = new FabricItemSettings();
 
-        /^?} else {^/
-        /^Identifier id = Identifier.of(ServerRedstoneBlock.MOD_ID, name);
+        ^//^?} else {^/
+        Identifier id = Identifier.of(ServerRedstoneBlock.MOD_ID, name);
         Item.Settings settings = new Item.Settings();
-        ^//^?}^/
+        /^?}^/
         try {
             BlockItem blockItem = blockItemClass.getConstructor(Block.class, Item.Settings.class).newInstance(block, settings);
             return Registry.register(Registries.ITEM, id, blockItem);

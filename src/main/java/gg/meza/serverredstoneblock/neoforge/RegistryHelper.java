@@ -1,5 +1,5 @@
 /*? if neoforge {*/
-/*package gg.meza.serverredstoneblock.neoforge;
+package gg.meza.serverredstoneblock.neoforge;
 
 import gg.meza.serverredstoneblock.RedstoneBlockItem;
 import net.minecraft.block.Block;
@@ -40,4 +40,4 @@ public class RegistryHelper {
         BLOCKS.register(eventBus);
     }
 }
-*//*?}*/
+/*?}*/

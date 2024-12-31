@@ -9,6 +9,7 @@ plugins {
 fun String.upperCaseFirst() = replaceFirstChar { if (it.isLowerCase()) it.uppercaseChar() else it }
 
 val minecraftVersion = stonecutter.current.version
+
 val customPropsFile = rootProject.file("versions/dependencies/${minecraftVersion}.properties")
 
 if (customPropsFile.exists()) {
@@ -42,8 +43,21 @@ group = mod.group
 val isBeta = "next" in version.toString()
 
 val testserverDir = "../../run/testserver/${loader}"
+val testClientDir = "../../run/testclient/${loader}"
 
 base { archivesName.set("${mod.id}-${loader}") }
+
+stonecutter {
+    const("fabric", loader == "fabric")
+    const("forge", loader == "forge")
+    const("neoforge", loader == "neoforge")
+    val j21 = eval(minecraftVersion, ">=1.20.6")
+    java {
+//        withSourcesJar()
+        sourceCompatibility = if (j21) JavaVersion.VERSION_21 else JavaVersion.VERSION_17
+        targetCompatibility = if (j21) JavaVersion.VERSION_21 else JavaVersion.VERSION_17
+    }
+}
 
 repositories {
     mavenCentral()
@@ -55,25 +69,32 @@ repositories {
 
 loom {
     accessWidenerPath = rootProject.file("src/main/resources/${mod.id}.accesswidener")
+
+    if (isForge) {
+        forge.convertAccessWideners = true
+    }
+
+    decompilers {
+        get("vineflower").apply { options.put("mark-corresponding-synthetics", "1") }
+    }
+
     runConfigs.all {
         isIdeConfigGenerated = true
         runDir = "../../run"
-        vmArgs("-Dmixin.debug.export=true")
+//        vmArgs("-Dmixin.debug.export=true")
         if (environment == "client") programArgs("--username=houseofmeza")
     }
 
     runs {
-
-
         create("gameTestClient") {
             client()
-            runDir = "../../run"
+            runDir = testClientDir
             if (isFabric) {
                 vmArg("-Dfabric-api.gametest")
                 vmArg("-Dfabric-api.gametest.report-file=${rootProject.file("build/junit.xml")}");
             }
             if (isForge) {
-                //property("forge.enabledGameTestNamespaces", "serverredstoneblock")
+                property("forge.enabledGameTestNamespaces", mod.id)
                 property("forge.enableGameTest", "true")
             }
         }
@@ -87,37 +108,25 @@ loom {
                 vmArg("-Dfabric-api.gametest.report-file=${rootProject.file("build/junit.xml")}");
             }
             if (isForge) {
-                property("forge.enabledGameTestNamespaces", "serverredstoneblock-disabled")
+                property("forge.enabledGameTestNamespaces", mod.id)
                 property("forge.enableGameTest", "true")
                 property("forge.gameTestServer", "true")
+                // Logging
+//                property("forge.logging.console.level", "debug")
+//                property("forge.logging.markers", "REGISTRIES")
+
             }
         }
     }
-
-    if (isForge) {
-        forge.convertAccessWideners = true
-    }
-
-    decompilers {
-        get("vineflower").apply { options.put("mark-corresponding-synthetics", "1") }
-    }
 }
+
 
 if (isForge) {
     configurations.configureEach {
         resolutionStrategy.force("net.sf.jopt-simple:jopt-simple:5.0.4")
     }
-
-//    val copyGameTestResources = tasks.register<Copy>("copyGameTestResources") {
-//        from(rootProject.file("src/main/resources/data/${mod.id}/gametest/structure"))
-//        into("${testserverDir}/gameteststructures")
-//    }
-//
-//    tasks.named<JavaExec>("runGameTestServer") {
-//        dependsOn(copyGameTestResources)
-//    }
-
 }
+
 dependencies {
     minecraft("com.mojang:minecraft:$minecraftVersion")
     if (!isNeoforge) {
@@ -205,7 +214,7 @@ tasks.processResources {
             "data/${mod.id}/advancement" to "data/${mod.id}/advancements",
             "data/${mod.id}/loot_table" to "data/${mod.id}/loot_tables",
             "data/${mod.id}/recipe" to "data/${mod.id}/recipes",
-            "data/${mod.id}/gametest/structure" to "data/${mod.id}/gametest/structures"
+            "data/${mod.id}/structure" to "data/${mod.id}/structures"
         )
 
         renameMappings.forEach { (source, destination) ->
@@ -229,17 +238,7 @@ tasks.processResources {
     }
 }
 
-stonecutter {
-    const("fabric", loader == "fabric")
-    const("forge", loader == "forge")
-    const("neoforge", loader == "neoforge")
-    val j21 = eval(minecraftVersion, ">=1.20.6")
-    java {
-        withSourcesJar()
-        sourceCompatibility = if (j21) JavaVersion.VERSION_21 else JavaVersion.VERSION_17
-        targetCompatibility = if (j21) JavaVersion.VERSION_21 else JavaVersion.VERSION_17
-    }
-}
+
 
 tasks.register("configureMinecraft") {
     group = "project"
@@ -298,6 +297,7 @@ publishMods {
 }
 
 afterEvaluate {
+    // Fix for an Architectury issue with LWJGL
     tasks.runServer {
         classpath = classpath.filter { !it.toString().contains("\\org.lwjgl\\") }
     }

@@ -17,12 +17,13 @@ public class RedstoneBlockItem extends BlockItem {
 
     /*? if <1.21 {*/
     /*@Override
-    *//*?}*/
+     *//*?}*/
     public void onCraft(ItemStack stack, World world, PlayerEntity player) {
         if (!world.isClient()) {
             telemetry.redstoneBlockCrafted();
         }
     }
+
 
     @Override
     public Text getName() {

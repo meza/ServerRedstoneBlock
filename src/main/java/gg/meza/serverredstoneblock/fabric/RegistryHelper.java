@@ -1,7 +1,6 @@
 /*? if fabric {*/
 /*package gg.meza.serverredstoneblock.fabric;
 
-import gg.meza.serverredstoneblock.RedstoneBlockEntity;
 import gg.meza.serverredstoneblock.RedstoneBlockItem;
 import gg.meza.serverredstoneblock.ServerRedstoneBlock;
 /^? if 1.20.2 {^/
@@ -22,9 +21,6 @@ import static gg.meza.serverredstoneblock.ServerRedstoneBlock.*;
 public class RegistryHelper {
 
     public static final Block REDSTONE_BLOCK = registerBlock(blockName, blockSupplier.get(), RedstoneBlockItem.class);
-
-
-    public static final BlockEntityType<RedstoneBlockEntity> REDSTONE_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE, MAIN_ID, BlockEntityType.Builder.create(RedstoneBlockEntity::new, REDSTONE_BLOCK).build(null));
 
     public static Block registerBlock(String name, Block block, Class<? extends BlockItem> blockItemClass) {
         registerBlockItem(name, block, blockItemClass);

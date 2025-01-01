@@ -18,6 +18,9 @@
     ],
     "fabric-gametest" : [
       "gg.meza.serverredstoneblock.E2ETests"
+    ],
+    "fabric-datagen": [
+      "gg.meza.serverredstoneblock.fabric.DataGenerator"
     ]
   },
   "depends": {

@@ -1,6 +1,0 @@
-{
-  "parent": "serverredstoneblock:block/server_redstone_block",
-  "textures": {
-    "all": "serverredstoneblock:block/server_redstone_block_warning"
-  }
-}

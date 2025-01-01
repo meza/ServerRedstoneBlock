@@ -68,6 +68,16 @@ repositories {
     maven("https://maven.neoforged.net/releases/")
 }
 
+if (isFabric) {
+    fabricApi {
+        configureDataGeneration {
+            /*? if >= 1.21.4 {*/
+            client = true
+            /*? }*/
+        }
+    }
+}
+
 loom {
     accessWidenerPath = rootProject.file("src/main/resources/${mod.id}.accesswidener")
 
@@ -170,6 +180,7 @@ val buildAndCollect = tasks.register<Copy>("buildAndCollect") {
     dependsOn("build")
 }
 
+
 if (stonecutter.current.isActive) {
     rootProject.tasks.register("buildActive") {
         group = "project"
@@ -178,6 +189,13 @@ if (stonecutter.current.isActive) {
     rootProject.tasks.register("runActive") {
         group = "project"
         dependsOn(tasks.named("runClient"))
+    }
+
+    if (isFabric) {
+        rootProject.tasks.register("dataGenActive") {
+            group = "project"
+            dependsOn(tasks.named("runDatagen"))
+        }
     }
 
     rootProject.tasks.register("testActiveClient") {
@@ -191,9 +209,12 @@ if (stonecutter.current.isActive) {
     }
 }
 
+
 tasks.processResources {
     outputs.cacheIf { false }
     val oldResources = stonecutter.eval(stonecutter.current.version, "<1.21")
+
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
 
     val map = mapOf(
         "id" to mod.id,
@@ -283,6 +304,7 @@ tasks.register("configureMinecraft") {
         )
     }
 }
+
 
 tasks.named("runClient") {
     dependsOn(tasks.named("configureMinecraft"))

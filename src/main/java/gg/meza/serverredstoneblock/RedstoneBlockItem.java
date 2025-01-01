@@ -25,8 +25,12 @@ public class RedstoneBlockItem extends BlockItem {
     }
 
 
-    @Override
+    /*? if <1.21.4 {*/
+    /*@Override
     public Text getName() {
         return Text.translatable("block.serverredstoneblock.server_redstone_block");
     }
+    *//*?}*/
+
+
 }

@@ -2,13 +2,13 @@ package gg.meza.serverredstoneblock;
 
 /*? if fabric {*/
 
-import gg.meza.serverredstoneblock.fabric.RegistryHelper;
+/*import gg.meza.serverredstoneblock.fabric.RegistryHelper;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.loader.impl.FabricLoaderImpl;
-/*?}*/
+*//*?}*/
 
 /*? if forge {*/
 /*import gg.meza.serverredstoneblock.forge.RegistryHelper;
@@ -20,7 +20,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 *//*?}*/
 
 /*? if neoforge {*/
-/*import gg.meza.serverredstoneblock.neoforge.RegistryHelper;
+import gg.meza.serverredstoneblock.neoforge.RegistryHelper;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -28,7 +28,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-*//*?}*/
+/*?}*/
 
 /*? if >=1.21.2 {*/
 import net.minecraft.registry.RegistryKey;
@@ -55,13 +55,13 @@ import static gg.meza.serverredstoneblock.ServerRedstoneBlock.MOD_ID;
 import static net.minecraft.server.command.CommandManager.literal;
 
 /*? if fabric {*/
-public class ServerRedstoneBlock implements ModInitializer {
-    /*?}*/
+/*public class ServerRedstoneBlock implements ModInitializer {
+    *//*?}*/
 
     /*? if forgeLike {*/
-/*@Mod(MOD_ID)
+@Mod(MOD_ID)
 public class ServerRedstoneBlock {
-*//*?}*/
+/*?}*/
 
     public static final String VERSION = "VERSION_REPL";
     public static final String blockName = "server_redstone_block";
@@ -87,8 +87,13 @@ public class ServerRedstoneBlock {
     );
 
     /*? if forge {*/
-    /*public ServerRedstoneBlock() {
+        /*/^? if >=1.21.4 {^/
+    public ServerRedstoneBlock(final FMLJavaModLoadingContext context) {
+        IEventBus modEventBus = context.getModEventBus();
+        /^?} else {^/
+    /^public ServerRedstoneBlock() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        ^//^?}^/
         modEventBus.addListener(this::onCommonSetup);
         modEventBus.addListener(this::addItemToCreativeTab);
 
@@ -104,7 +109,7 @@ public class ServerRedstoneBlock {
     *//*?}*/
 
     /*? if neoforge {*/
-    /*public ServerRedstoneBlock(IEventBus modEventBus, ModContainer modContainer) {
+    public ServerRedstoneBlock(IEventBus modEventBus, ModContainer modContainer) {
         modEventBus.addListener(this::onCommonSetup);
         modEventBus.addListener(this::addItemToCreativeTab);
         RegistryHelper.register(modEventBus);
@@ -119,13 +124,13 @@ public class ServerRedstoneBlock {
         }
     }
 
-    *//*?}*/
+    /*?}*/
 
     /*? if forgeLike {*/
-    /*private void onCommonSetup(FMLCommonSetupEvent event) {
+    private void onCommonSetup(FMLCommonSetupEvent event) {
         ServerRedstoneBlock.init();
     }
-    *//*?}*/
+    /*?}*/
 
     //COMMON
 
@@ -178,7 +183,7 @@ public class ServerRedstoneBlock {
     }
 
     /*? if fabric {*/
-    @Override
+    /*@Override
     public void onInitialize() {
         RegistryHelper.registerBlockAndItems();
         ServerRedstoneBlock.init();
@@ -202,7 +207,7 @@ public class ServerRedstoneBlock {
 
         ServerTickEvents.START_WORLD_TICK.register(ServerRedstoneBlock::onServerTick);
     }
-    /*?}*/
+    *//*?}*/
 
 
 }

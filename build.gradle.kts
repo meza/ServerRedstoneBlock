@@ -10,6 +10,15 @@ fun String.upperCaseFirst() = replaceFirstChar { if (it.isLowerCase()) it.upperc
 
 val minecraftVersion = stonecutter.current.version
 
+fun getResourceVersionFor(version: String): Int {
+    return when (version) {
+        "1.20.2" -> 18
+        "1.21" -> 34
+        "1.21.4" -> 46
+        else -> 18
+    }
+}
+
 val customPropsFile = rootProject.file("versions/dependencies/${minecraftVersion}.properties")
 
 if (customPropsFile.exists()) {
@@ -44,6 +53,7 @@ val isBeta = "next" in version.toString()
 
 val testserverDir = "../../run/testserver/${loader}"
 val testClientDir = "../../run/testclient/${loader}"
+val generatedResources = "src/generated"
 
 base { archivesName.set("${mod.id}-${loader}") }
 
@@ -57,6 +67,14 @@ stonecutter {
 //        withSourcesJar()
         sourceCompatibility = if (j21) JavaVersion.VERSION_21 else JavaVersion.VERSION_17
         targetCompatibility = if (j21) JavaVersion.VERSION_21 else JavaVersion.VERSION_17
+
+        toolchain {
+            if (j21) {
+                languageVersion.set(JavaLanguageVersion.of(21))
+            } else {
+                languageVersion.set(JavaLanguageVersion.of(17))
+            }
+        }
     }
 }
 
@@ -74,6 +92,14 @@ if (isFabric) {
             /*? if >= 1.21.4 {*/
             client = true
             /*? }*/
+        }
+    }
+}
+
+if (isForgeLike) {
+    sourceSets {
+        main {
+            resources.srcDir(generatedResources)
         }
     }
 }
@@ -97,6 +123,16 @@ loom {
     }
 
     runs {
+        if (isForge) {
+            create("Datagen") {
+                data()
+                programArgs("--all", "--mod", mod.id)
+                programArgs("--output", project.file(generatedResources).toString())
+                programArgs("--existing", rootProject.file("src/main/resources").toString())
+                property("forge.logging.console.level", "debug")
+                property("forge.logging.markers", "REGISTRIES")
+            }
+        }
         create("gameTestClient") {
             client()
             runDir = testClientDir
@@ -191,11 +227,9 @@ if (stonecutter.current.isActive) {
         dependsOn(tasks.named("runClient"))
     }
 
-    if (isFabric) {
-        rootProject.tasks.register("dataGenActive") {
-            group = "project"
-            dependsOn(tasks.named("runDatagen"))
-        }
+    rootProject.tasks.register("dataGenActive") {
+        group = "project"
+        dependsOn(tasks.named("runDatagen"))
     }
 
     rootProject.tasks.register("testActiveClient") {
@@ -221,11 +255,13 @@ tasks.processResources {
         "name" to mod.name,
         "description" to mod.description,
         "version" to mod.version,
-        "minecraftVersion" to minecraftVersion
+        "minecraftVersion" to minecraftVersion,
+        "packVersion" to getResourceVersionFor(minecraftVersion)
     )
     filesMatching("fabric.mod.json") { expand(map) }
     filesMatching("META-INF/mods.toml") { expand(map) }
     filesMatching("META-INF/neoforge.mods.toml") { expand(map) }
+    filesMatching("pack.mcmeta") { expand(map) }
 
     if (isNeoforge) {
         exclude("fabric.mod.json")
@@ -351,4 +387,8 @@ afterEvaluate {
     tasks.named<JavaExec>("runGameTestServer") {
         classpath = classpath.filter { !it.toString().contains("\\org.lwjgl\\") }
     }
+}
+
+tasks.withType<JavaCompile> {
+    options.compilerArgs.add("-Xlint:-deprecation")
 }

@@ -1,14 +1,16 @@
 import java.util.*
 
-plugins {
-    id("idea")
-    id("dev.architectury.loom")
-    id("me.modmuss50.mod-publish-plugin")
-}
-
 fun String.upperCaseFirst() = replaceFirstChar { if (it.isLowerCase()) it.uppercaseChar() else it }
 
-val minecraftVersion = stonecutter.current.version
+plugins {
+    id("idea")
+    id("me.modmuss50.mod-publish-plugin")
+    id("dev.architectury.loom")
+}
+
+val loader = project.name.substringAfterLast("-").lowercase()
+project.ext["loom.platform"] = loader
+
 
 fun getResourceVersionFor(version: String): Int {
     return when (version) {
@@ -19,6 +21,7 @@ fun getResourceVersionFor(version: String): Int {
     }
 }
 
+val minecraftVersion = stonecutter.current.version
 val customPropsFile = rootProject.file("versions/dependencies/${minecraftVersion}.properties")
 
 if (customPropsFile.exists()) {
@@ -40,7 +43,6 @@ class ModData {
 }
 
 val mod = ModData()
-val loader = project.name.substringAfterLast("-").lowercase()
 val isFabric = loader == "fabric"
 val isForge = loader == "forge"
 val isNeoforge = loader == "neoforge"
@@ -133,6 +135,37 @@ loom {
                 property("forge.logging.markers", "REGISTRIES")
             }
         }
+        if (isNeoforge && false) {
+            if (stonecutter.eval(stonecutter.current.version, ">=1.21.4")) {
+
+                create("ServerDatagen") {
+                    serverData()
+                    programArgs("--mod", mod.id)
+                    programArgs("--output", project.file(generatedResources).toString())
+                    property("neoforge.logging.console.level", "debug")
+                    property("neoforge.logging.markers", "REGISTRIES")
+                }
+                create("CliteDatagen") {
+                    clientData()
+                    programArgs("--mod", mod.id)
+                    programArgs("--output", project.file(generatedResources).toString())
+                    property("neoforge.logging.console.level", "debug")
+                    property("neoforge.logging.markers", "REGISTRIES")
+                }
+
+
+
+            } else {
+                create("Datagen") {
+                    data()
+                    programArgs("--all", "--mod", mod.id)
+                    programArgs("--output", project.file(generatedResources).toString())
+                    programArgs("--existing", rootProject.file("src/main/resources").toString())
+                    property("neoforge.logging.console.level", "debug")
+                    property("neoforge.logging.markers", "REGISTRIES")
+                }
+            }
+        }
 
         create("gameTestClient") {
             client()
@@ -148,8 +181,8 @@ loom {
         }
 
         create("gameTestServer") {
-            server()
             name("Game Test Server")
+            server()
             runDir = testserverDir
             if (isFabric) {
                 vmArg("-Dfabric-api.gametest")
@@ -216,6 +249,36 @@ val buildAndCollect = tasks.register<Copy>("buildAndCollect") {
     into(rootProject.layout.buildDirectory.file("libs"))
     dependsOn("build")
 }
+
+//if (isNeoforge && stonecutter.eval(stonecutter.current.version, ">=1.21.4")) {
+//    tasks.register("runDatagen") {
+//        dependsOn(project.tasks.named("ServerDatagen"), project.tasks.named("CliteDatagen"))
+//    }
+//}
+tasks.register("buildActive") {
+    group = "project"
+    dependsOn(buildAndCollect)
+}
+tasks.register("runActive") {
+    group = "project"
+    dependsOn(tasks.named("runClient"))
+}
+
+tasks.register("dataGenActive") {
+    group = "project"
+    dependsOn(tasks.named("runDatagen"))
+}
+
+tasks.register("testActiveClient") {
+    group = "project"
+    dependsOn(tasks.named("runGameTestClient"))
+}
+
+tasks.register("testActiveServer") {
+    group = "project"
+    dependsOn(tasks.named("runGameTestServer"))
+}
+
 
 
 if (stonecutter.current.isActive) {
@@ -325,9 +388,10 @@ tasks.processResources {
                 println("Cleaning up empty directories in ${buildResourcesDir.path}")
 
                 // Recursively delete empty directories
-                buildResourcesDir.walkBottomUp().filter { it.isDirectory && it.listFiles().isNullOrEmpty() }.forEach { dir ->
-                    dir.delete()
-                }
+                buildResourcesDir.walkBottomUp().filter { it.isDirectory && it.listFiles().isNullOrEmpty() }
+                    .forEach { dir ->
+                        dir.delete()
+                    }
             }
         }
     }

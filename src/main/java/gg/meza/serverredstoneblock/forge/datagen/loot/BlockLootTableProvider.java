@@ -4,10 +4,10 @@
 import gg.meza.serverredstoneblock.forge.datagen.LootTableGenerator;
 import net.minecraft.data.DataOutput;
 /^? if >= 1.21.4 {^/
-import net.minecraft.data.loottable.LootTableProvider;
-/^?} else {^/
-/^import net.minecraft.data.server.loottable.LootTableProvider;
-^//^?}^/
+/^import net.minecraft.data.loottable.LootTableProvider;
+^//^?} else {^/
+import net.minecraft.data.server.loottable.LootTableProvider;
+/^?}^/
 
 import net.minecraft.loot.context.LootContextTypes;
 /^? if >= 1.21 {^/

@@ -15,22 +15,22 @@ import java.util.concurrent.CompletableFuture;
 
 @Mod.EventBusSubscriber(modid = ServerRedstoneBlock.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class DataGenerators {
-//    @SubscribeEvent
+    @SubscribeEvent
     public static void gatherData(GatherDataEvent event) {
         DataGenerator generator = event.getGenerator();
         DataOutput output = generator.getPackOutput();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
         CompletableFuture<RegistryWrapper.WrapperLookup> lookupProvider = event.getLookupProvider();
 
-//        generator.addProvider(event.includeServer(), new BlockTagProvider(output, lookupProvider, existingFileHelper));
-//        generator.addProvider(event.includeServer(), BlockLootTableProvider.create(output/^? if >= 1.21 {^/, lookupProvider/^?}^/));
+        generator.addProvider(event.includeServer(), new BlockTagProvider(output, lookupProvider, existingFileHelper));
+        generator.addProvider(event.includeServer(), BlockLootTableProvider.create(output/^? if >= 1.21 {^/, lookupProvider/^?}^/));
         generator.addProvider(event.includeServer(), new RecipeProvider(output/^? if >= 1.21 {^/, lookupProvider/^?}^/));
 
         /^? if >= 1.21.4 {^/
-        generator.addProvider(event.includeClient(), new ModelProvider(output));
-        /^?} else {^/
-        /^generator.addProvider(event.includeClient(), new BlockStateProvider(output, existingFileHelper));
-        ^//^?}^/
+        /^generator.addProvider(event.includeClient(), new ModelProvider(output));
+        ^//^?} else {^/
+        generator.addProvider(event.includeClient(), new BlockStateProvider(output, existingFileHelper));
+        /^?}^/
         generator.addProvider(event.includeClient(), new EnglishLanguageProvider(output));
     }
 

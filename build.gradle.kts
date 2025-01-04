@@ -99,7 +99,7 @@ if (isFabric) {
 if (isForgeLike) {
     sourceSets {
         main {
-            resources.srcDir(generatedResources)
+            resources.srcDir(project.file(generatedResources))
         }
     }
 }
@@ -123,7 +123,7 @@ loom {
     }
 
     runs {
-        if (isForge) {
+        if (isForge && stonecutter.eval(stonecutter.current.version, "<1.21.4")) {
             create("Datagen") {
                 data()
                 programArgs("--all", "--mod", mod.id)
@@ -133,6 +133,7 @@ loom {
                 property("forge.logging.markers", "REGISTRIES")
             }
         }
+
         create("gameTestClient") {
             client()
             runDir = testClientDir
@@ -250,6 +251,8 @@ tasks.processResources {
 
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
 
+    println(String.format("Current version is %d", getResourceVersionFor(minecraftVersion)))
+
     val map = mapOf(
         "id" to mod.id,
         "name" to mod.name,
@@ -261,7 +264,6 @@ tasks.processResources {
     filesMatching("fabric.mod.json") { expand(map) }
     filesMatching("META-INF/mods.toml") { expand(map) }
     filesMatching("META-INF/neoforge.mods.toml") { expand(map) }
-    filesMatching("pack.mcmeta") { expand(map) }
 
     if (isNeoforge) {
         exclude("fabric.mod.json")
@@ -271,6 +273,21 @@ tasks.processResources {
     if (isForge) {
         exclude("fabric.mod.json")
         exclude("META-INF/neoforge.mods.toml")
+
+        if (oldResources) {
+            filesMatching("pack.1.20.3-.mcmeta") {
+                path = path.replace("pack.1.20.3-.mcmeta", "pack.mcmeta")
+                expand(map)
+            }
+            exclude("pack.1.20.3+.mcmeta")
+        } else {
+            filesMatching("pack.1.20.3+.mcmeta") {
+                path = path.replace("pack.1.20.3+.mcmeta", "pack.mcmeta")
+                expand(map)
+            }
+            exclude("pack.1.20.3-.mcmeta")
+        }
+
     }
 
     if (isFabric) {

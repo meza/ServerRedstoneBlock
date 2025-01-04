@@ -64,6 +64,12 @@ jobs:
       - name: "ℹ️ Needs Release?"
         run: echo "Needs release published? ${{ steps.get-next-version.outputs.new-release-published == 'true' }}"
 
+      - name: "🔨 Data Gen"
+        run: |
+          ./gradlew chiseledDatagen --no-daemon
+          cp -rf versions/1.21-fabric/src versions/1.21-neoforge/src
+          cp -rf versions/1.21.4-fabric/src versions/1.21.4-neoforge/src
+
       - name: "🏗️ Build, Test & Release"
         if: ${{ steps.get-next-version.outputs.new-release-published == 'true' }}
         env:
@@ -78,7 +84,7 @@ jobs:
 
       - name: "🧪 Run Dev Build"
         if: ${{ steps.get-next-version.outputs.new-release-published != 'true' }}
-        run: ./gradlew chiseledBuildAndCollect chiseledTestE2E --no-daemon
+        run: ./gradlew chiseledTestE2E chiseledBuildAndCollect --no-daemon
 
       - name: "🕵️‍♂️ Collect jars"
         uses: actions/upload-artifact@v4

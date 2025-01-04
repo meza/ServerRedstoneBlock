@@ -261,39 +261,36 @@ tasks.processResources {
         "minecraftVersion" to minecraftVersion,
         "packVersion" to getResourceVersionFor(minecraftVersion)
     )
-    filesMatching("fabric.mod.json") { expand(map) }
-    filesMatching("META-INF/mods.toml") { expand(map) }
-    filesMatching("META-INF/neoforge.mods.toml") { expand(map) }
+    filesMatching(listOf("fabric.mod.json", "META-INF/mods.toml", "META-INF/neoforge.mods.toml")) { expand(map) }
 
-    if (isNeoforge) {
-        exclude("fabric.mod.json")
-        exclude("META-INF/mods.toml")
-    }
+    when {
+        isFabric -> {
+            exclude("META-INF/mods.toml", "META-INF/neoforge.mods.toml")
+        }
 
-    if (isForge) {
-        exclude("fabric.mod.json")
-        exclude("META-INF/neoforge.mods.toml")
+        isNeoforge -> {
+            exclude("fabric.mod.json", "META-INF/mods.toml")
+        }
 
-        if (oldResources) {
-            filesMatching("pack.1.20.3-.mcmeta") {
-                path = path.replace("pack.1.20.3-.mcmeta", "pack.mcmeta")
-                expand(map)
+        isForge -> {
+            exclude("fabric.mod.json", "META-INF/neoforge.mods.toml")
+            if (oldResources) {
+                filesMatching("pack.1.20.3-.mcmeta") {
+                    path = path.replace("pack.1.20.3-.mcmeta", "pack.mcmeta")
+                    expand(map)
+                }
+                exclude("pack.1.20.3+.mcmeta")
+            } else {
+                filesMatching("pack.1.20.3+.mcmeta") {
+                    path = path.replace("pack.1.20.3+.mcmeta", "pack.mcmeta")
+                    expand(map)
+                }
+                exclude("pack.1.20.3-.mcmeta")
             }
-            exclude("pack.1.20.3+.mcmeta")
-        } else {
-            filesMatching("pack.1.20.3+.mcmeta") {
-                path = path.replace("pack.1.20.3+.mcmeta", "pack.mcmeta")
-                expand(map)
-            }
-            exclude("pack.1.20.3-.mcmeta")
         }
 
     }
 
-    if (isFabric) {
-        exclude("META-INF/neoforge.mods.toml")
-        exclude("META-INF/mods.toml")
-    }
 
     val resourceChanges = mapOf(
         "itemIdentifier" to if (oldResources) "item" else "id"

@@ -65,6 +65,9 @@ jobs:
       - name: "🔨 Data Gen"
         run: |
           ./gradlew chiseledDatagen --no-daemon
+
+      - name: "📎 Copy resources"
+        run: |
           cp -rf "versions/1.21-fabric/src" "versions/1.21-neoforge/src"
           cp -rf "versions/1.21.4-fabric/src" "versions/1.21.4-neoforge/src"
 

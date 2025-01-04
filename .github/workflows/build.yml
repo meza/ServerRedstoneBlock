@@ -65,8 +65,8 @@ jobs:
       - name: "🔨 Data Gen"
         run: |
           ./gradlew chiseledDatagen --no-daemon
-          cp -rf versions/1.21-fabric/src versions/1.21-neoforge/src
-          cp -rf versions/1.21.4-fabric/src versions/1.21.4-neoforge/src
+          cp -rf "versions/1.21-fabric/src" "versions/1.21-neoforge/src"
+          cp -rf "versions/1.21.4-fabric/src" "versions/1.21.4-neoforge/src"
 
       - name: "🏗️ Build, Test & Release"
         if: ${{ steps.get-next-version.outputs.new-release-published == 'true' }}

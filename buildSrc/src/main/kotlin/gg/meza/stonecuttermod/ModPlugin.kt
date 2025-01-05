@@ -56,7 +56,7 @@ class ModPlugin : Plugin<Project> {
         )
 
         //Configure the compile time
-        project.configure<JavaPluginExtension> {
+        project.project.configure<JavaPluginExtension> {
             // Configure the Java plugin to use the correct Java version for the given Minecraft version
             val javaVersion = javaVersion(stonecutter)
             sourceCompatibility = javaVersion
@@ -74,7 +74,7 @@ class ModPlugin : Plugin<Project> {
         patchAroundArchitecturyQuirks(project)
 
         // Deal with the general resources
-        project.tasks.withType<ProcessResources> {
+        project.project.tasks.withType<ProcessResources> {
             duplicatesStrategy = DuplicatesStrategy.INCLUDE
             val currentResourceVersion = getResourceVersionFor(minecraftVersion)
             val needsOldResources = currentResourceVersion < 34; //Version 43 changed how the resource directories are named
@@ -188,7 +188,9 @@ class ModPlugin : Plugin<Project> {
         }
 
         val packFileData = GsonBuilder().setPrettyPrinting().create().toJson(packMCMeta)
-        Files.createDirectory(outputFilePath.toPath().parent);
+        if(!outputFilePath.parentFile.exists()) {
+            outputFilePath.parentFile.mkdirs()
+        }
         Files.writeString(outputFilePath.toPath(), packFileData, java.nio.file.StandardOpenOption.CREATE, java.nio.file.StandardOpenOption.TRUNCATE_EXISTING)
 
         return packFileData;

@@ -3,10 +3,14 @@ plugins {
     id("dev.architectury.loom") version "1.9.+" apply false
     id("me.modmuss50.mod-publish-plugin") version "0.8.+" apply false
 }
+
 stonecutter active "1.21.4-fabric" /* [SC] DO NOT EDIT */
 stonecutter.automaticPlatformConstants = true
 
-
+stonecutter.tree.nodes.forEach {
+    val loader = it.metadata.project.substringAfterLast("-")
+    it.ext["loom.platform"] = loader
+}
 
 stonecutter registerChiseled tasks.register("chiseledBuild", stonecutter.chiseled) {
     group = "project"

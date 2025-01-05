@@ -11,7 +11,6 @@ plugins {
 val loader = project.name.substringAfterLast("-").lowercase()
 project.ext["loom.platform"] = loader
 
-
 fun getResourceVersionFor(version: String): Int {
     return when (version) {
         "1.20.2" -> 18
@@ -442,8 +441,4 @@ afterEvaluate {
             classpath = classpath.filter { !it.toString().contains("\\org.lwjgl\\") }
         }
     }
-}
-
-tasks.withType<JavaCompile> {
-    options.compilerArgs.add("-Xlint:-deprecation")
 }

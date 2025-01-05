@@ -94,7 +94,7 @@ class ModPlugin : Plugin<Project> {
                 "forgeVersion" to project.mod.prop("forge_version"),
                 "neoforgeVersion" to project.mod.prop("neoforge_version", "not set"),
             )
-            filesMatching(listOf("*.json", "*.toml")) { expand(basicModDetails) }
+            filesMatching(listOf("**/*.json", "**/*.toml")) { expand(basicModDetails) }
 
             // Exclude the correct mod metadata file based on the loader
             when {

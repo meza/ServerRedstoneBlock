@@ -18,10 +18,14 @@
     ],
     "fabric-gametest" : [
       "gg.meza.serverredstoneblock.E2ETests"
+    ],
+    "fabric-datagen": [
+      "gg.meza.serverredstoneblock.fabric.DataGenerator"
     ]
   },
   "depends": {
     "fabricloader": "*",
+    "fabric-api": ">=${fabricVersion}",
     "minecraft": ">=${minecraftVersion}"
   }
 }

@@ -22,17 +22,6 @@ jobs:
       - name: "⬇️ Checkout"
         uses: actions/checkout@v3
 
-      - name: Cache Gradle dependencies
-        id: cache-gradle-dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-            ~/forge/.gradle/caches
-            ~/fabric/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
-
       - name: "🛂 Validate Gradle Wrapper"
         uses: gradle/wrapper-validation-action@v1
 
@@ -40,7 +29,12 @@ jobs:
         uses: actions/setup-java@v4
         with:
           cache: 'gradle'
+          cache-dependency-path: |
+            versions/*.properties
+            *.properties
+            *.gradle.kts
           java-version: 21
+          check-latest: true
           distribution: 'temurin'
 
       - name: "🔃 Use Latest Node.js"
@@ -64,6 +58,16 @@ jobs:
       - name: "ℹ️ Needs Release?"
         run: echo "Needs release published? ${{ steps.get-next-version.outputs.new-release-published == 'true' }}"
 
+      - name: "🔨 Data Gen"
+        run: |
+          ./gradlew chiseledDatagen
+
+      - name: "📎 Copy resources"
+        run: |
+          cp -rfv "versions/1.21-fabric/src" "versions/1.21-neoforge/src"
+          cp -rfv "versions/1.21.4-fabric/src" "versions/1.21.4-neoforge/src"
+          cp -rfv "versions/1.21.4-fabric/src" "versions/1.21.4-forge/src"
+
       - name: "🏗️ Build, Test & Release"
         if: ${{ steps.get-next-version.outputs.new-release-published == 'true' }}
         env:
@@ -78,7 +82,7 @@ jobs:
 
       - name: "🧪 Run Dev Build"
         if: ${{ steps.get-next-version.outputs.new-release-published != 'true' }}
-        run: ./gradlew chiseledBuildAndCollect chiseledTestE2E --no-daemon
+        run: ./gradlew chiseledTestE2E chiseledBuildAndCollect
 
       - name: "🕵️‍♂️ Collect jars"
         uses: actions/upload-artifact@v4
@@ -86,4 +90,5 @@ jobs:
           name: Artifacts
           path: |
             build/libs/*.jar
+            build/reports/**/*
 

@@ -1,24 +1,24 @@
-/*? if forge {*/
-/*package gg.meza.serverredstoneblock.forge;
+/*? if neoforge {*/
+/*package gg.meza.serverredstoneblock.neoforge;
 
 import gg.meza.serverredstoneblock.ServerRedstoneBlock;
-import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.server.ServerStartedEvent;
-import net.minecraftforge.event.server.ServerStoppingEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.loading.FMLLoader;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.loading.FMLLoader;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.neoforge.event.server.ServerStoppingEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 import static gg.meza.serverredstoneblock.ServerRedstoneBlock.*;
 
 
-@Mod.EventBusSubscriber(modid = ServerRedstoneBlock.MOD_ID)
-public class ForgeEventHandlers {
+@EventBusSubscriber(modid = ServerRedstoneBlock.MOD_ID)
+public class NeoForgeEventHandlers {
     @SubscribeEvent
     public static void onServerStarted(ServerStartedEvent server) {
         LOGGER.info("Server started from the event bus");
-        ServerRedstoneBlock.onServerStarted(server.getServer(), "forge", FMLLoader.versionInfo().forgeVersion());
+        ServerRedstoneBlock.onServerStarted(server.getServer(), "forge", FMLLoader.versionInfo().neoForgeVersion());
     }
 
     @SubscribeEvent
@@ -35,9 +35,8 @@ public class ForgeEventHandlers {
     }
 
     @SubscribeEvent
-    public static void onServerTick(TickEvent.ServerTickEvent event) {
+    public static void onServerTick(ServerTickEvent.Post event) {
         ServerRedstoneBlock.onServerTick(event.getServer().getOverworld());
     }
 }
-
 *//*?}*/

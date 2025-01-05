@@ -1,42 +1,59 @@
 /*? if fabric {*/
-/*package gg.meza.serverredstoneblock.fabric;
+package gg.meza.serverredstoneblock.fabric;
 
-import gg.meza.serverredstoneblock.RedstoneBlockEntity;
 import gg.meza.serverredstoneblock.RedstoneBlockItem;
 import gg.meza.serverredstoneblock.ServerRedstoneBlock;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+/*? if 1.20.2 {*/
+/*import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+*//*?}*/
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.block.Block;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+/*? if >=1.21.2 {*/
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+/*?}*/
 import net.minecraft.util.Identifier;
 
-import static gg.meza.serverredstoneblock.ServerRedstoneBlock.blockName;
-import static gg.meza.serverredstoneblock.ServerRedstoneBlock.blockSupplier;
+import static gg.meza.serverredstoneblock.ServerRedstoneBlock.*;
 
 public class RegistryHelper {
 
     public static final Block REDSTONE_BLOCK = registerBlock(blockName, blockSupplier.get(), RedstoneBlockItem.class);
 
-
-    public static final BlockEntityType<RedstoneBlockEntity> REDSTONE_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE, new Identifier(ServerRedstoneBlock.MOD_ID, blockName), BlockEntityType.Builder.create(RedstoneBlockEntity::new, REDSTONE_BLOCK).build(null));
-
     public static Block registerBlock(String name, Block block, Class<? extends BlockItem> blockItemClass) {
         registerBlockItem(name, block, blockItemClass);
-        return Registry.register(Registries.BLOCK, new Identifier(ServerRedstoneBlock.MOD_ID, name), block);
+        /*? if <1.21 {*/
+        /*Identifier id = new Identifier(ServerRedstoneBlock.MOD_ID, name);
+        *//*?} else {*/
+        Identifier id = Identifier.of(ServerRedstoneBlock.MOD_ID, name);
+         /*?}*/
+        return Registry.register(Registries.BLOCK, id, block);
     }
 
     public static Item registerBlockItem(String name, Block block, Class<? extends BlockItem> blockItemClass) {
+        /*? if <1.21 {*/
+        /*Identifier id = new Identifier(ServerRedstoneBlock.MOD_ID, name);
+        Item.Settings settings = new Item.Settings();
+
+        *//*?} else {*/
+        Identifier id = Identifier.of(ServerRedstoneBlock.MOD_ID, name);
+        /*? if >=1.21.2 {*/
+        RegistryKey<Item> key = RegistryKey.of(RegistryKeys.ITEM, id);
+        /*?}*/
+        Item.Settings settings = new Item.Settings()/*? if >=1.21.2 {*/.registryKey(key).useBlockPrefixedTranslationKey()/*?}*/;
+        /*?}*/
         try {
-            BlockItem blockItem = blockItemClass.getConstructor(Block.class, Item.Settings.class).newInstance(block, new FabricItemSettings());
-            return Registry.register(Registries.ITEM, new Identifier(ServerRedstoneBlock.MOD_ID, name), blockItem);
+            BlockItem blockItem = blockItemClass.getConstructor(Block.class, Item.Settings.class).newInstance(block, settings);
+            return Registry.register(Registries.ITEM, id, blockItem);
         } catch (Exception e) {
             throw new RuntimeException("Failed to create block item", e);
-        }    }
+        }
+    }
 
     public static void registerBlockAndItems() {
         ServerRedstoneBlock.LOGGER.info("Registering blocks and items for " + ServerRedstoneBlock.MOD_ID);
@@ -45,4 +62,4 @@ public class RegistryHelper {
     }
 }
 
-*//*?}*/
+/*?}*/

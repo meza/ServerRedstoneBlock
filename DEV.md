@@ -13,3 +13,4 @@
 - forge/src/main/resources/pack.mcmeta - update pack version
 
 
+- https://maven.architectury.dev/dev/architectury/yarn-mappings-patch-neoforge/

@@ -1,6 +1,9 @@
 package gg.meza.serverredstoneblock;
 
 import net.minecraft.nbt.NbtCompound;
+/*? if >= 1.21 {*/
+import net.minecraft.registry.RegistryWrapper;
+/*?}*/
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.PersistentStateManager;
@@ -12,11 +15,20 @@ public class WorldInfoSaveData extends PersistentState {
     public String worldId = UUID.randomUUID().toString();
     private boolean dirty = false;
 
-    private static Type<WorldInfoSaveData> type = new Type<>(
+    /*? if < 1.21 {*/
+    /*private static Type<WorldInfoSaveData> type = new Type<>(
             WorldInfoSaveData::create,
             WorldInfoSaveData::load,
             null
     );
+    *//*?} else {*/
+    private static Type<WorldInfoSaveData> type = new Type<>(
+            WorldInfoSaveData::new,
+            WorldInfoSaveData::load,
+            null
+    );
+    /*?}*/
+
 
     public static WorldInfoSaveData create() {
         WorldInfoSaveData data = new WorldInfoSaveData();
@@ -24,14 +36,15 @@ public class WorldInfoSaveData extends PersistentState {
         return data;
     }
 
-    public static WorldInfoSaveData load(NbtCompound tag) {
+
+    public static WorldInfoSaveData load(NbtCompound tag/*? if >=1.21 {*/, RegistryWrapper.WrapperLookup registryLookup/*?}*/) {
         WorldInfoSaveData data = create();
         data.worldId = tag.getString("worldId");
         return data;
     }
 
     @Override
-    public NbtCompound writeNbt(NbtCompound nbt) {
+    public NbtCompound writeNbt(NbtCompound nbt/*? if >=1.21 {*/, RegistryWrapper.WrapperLookup registryLookup/*?}*/) {
         nbt.putString("worldId", worldId);
         return nbt;
     }

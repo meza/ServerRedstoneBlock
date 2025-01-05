@@ -1,14 +1,14 @@
 /*? if forge {*/
-package gg.meza.serverredstoneblock.forge;
+/*package gg.meza.serverredstoneblock.forge;
 
-import gg.meza.serverredstoneblock.E2ETests;
-import gg.meza.serverredstoneblock.RedstoneBlockEntity;
 import gg.meza.serverredstoneblock.RedstoneBlockItem;
+import gg.meza.serverredstoneblock.ServerRedstoneBlock;
 import net.minecraft.block.Block;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraftforge.event.RegisterGameTestsEvent;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.util.Identifier;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -20,13 +20,10 @@ import static gg.meza.serverredstoneblock.ServerRedstoneBlock.*;
 
 public class RegistryHelper {
 
-    private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MOD_ID);
+    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MOD_ID);
     private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MOD_ID);
-    private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPE = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, MOD_ID);
 
     public static final RegistryObject<Block> REDSTONE_BLOCK = registerBlock(blockName, blockSupplier, RedstoneBlockItem.class);
-
-    public static final RegistryObject<BlockEntityType<RedstoneBlockEntity>> REDSTONE_BLOCK_ENTITY = BLOCK_ENTITY_TYPE.register(blockName, () -> BlockEntityType.Builder.create(RedstoneBlockEntity::new, REDSTONE_BLOCK.get()).build(null));
 
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block, Class<? extends BlockItem> blockItemClass) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);
@@ -35,9 +32,15 @@ public class RegistryHelper {
     }
 
     private static <T extends Block> RegistryObject<Item> registerBlockItem(String name, RegistryObject<T> block, Class<? extends BlockItem> blockItemClass) {
+
         return ITEMS.register(name, () -> {
             try {
-                return blockItemClass.getConstructor(Block.class, Item.Settings.class).newInstance(block.get(), new Item.Settings());
+                /^? if >=1.21.4 {^/
+                Identifier id = Identifier.of(ServerRedstoneBlock.MOD_ID, name);
+                RegistryKey<Item> key = RegistryKey.of(RegistryKeys.ITEM, id);
+                /^?}^/
+
+                return blockItemClass.getConstructor(Block.class, Item.Settings.class).newInstance(block.get(), new Item.Settings()/^? if >=1.21.4 {^/.registryKey(key).useBlockPrefixedTranslationKey()/^?}^/);
             } catch (Exception e) {
                 throw new RuntimeException("Failed to create block item", e);
             }
@@ -47,7 +50,6 @@ public class RegistryHelper {
     public static void register(IEventBus modEventBus) {
         BLOCKS.register(modEventBus);
         ITEMS.register(modEventBus);
-        BLOCK_ENTITY_TYPE.register(modEventBus);
     }
 }
-/*?}*/
+*//*?}*/

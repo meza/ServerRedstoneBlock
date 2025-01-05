@@ -1,21 +1,23 @@
 package gg.meza.serverredstoneblock;
 
+/*? if >=1.21 {*/
+import com.mojang.serialization.MapCodec;
+/*?}*/
+
 /*? if fabric {*/
-/*import gg.meza.serverredstoneblock.fabric.RegistryHelper;
-*//*?}*/
+import gg.meza.serverredstoneblock.fabric.RegistryHelper;
+/*?}*/
 /*? if forge {*/
-import gg.meza.serverredstoneblock.forge.RegistryHelper;
 /*?}*/
 import net.minecraft.block.*;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityTicker;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
@@ -24,8 +26,12 @@ import org.jetbrains.annotations.Nullable;
 import static gg.meza.serverredstoneblock.ServerRedstoneBlock.currentState;
 import static gg.meza.serverredstoneblock.ServerRedstoneBlock.telemetry;
 
-public class RedstoneBlock extends BlockWithEntity {
+public class RedstoneBlock extends Block {
+    /*? if >=1.21 {*/
+    public static final MapCodec<RedstoneBlock> CODEC = createCodec(RedstoneBlock::new);
+    /*?}*/
     public static final EnumProperty<ServerPowerState> POWER_STATE = EnumProperty.of("power_state", ServerPowerState.class);
+    public static final int TICK_DELAY_BETWEEN_CHECKS = 20;
     public static ServerPowerState powerState;
 
     public RedstoneBlock(Settings settings) {
@@ -34,27 +40,14 @@ public class RedstoneBlock extends BlockWithEntity {
         setDefaultState(getDefaultState().with(POWER_STATE, powerState));
     }
 
+    /*? if >=1.21 {*/
+    public MapCodec<RedstoneBlock> getCodec() {
+        return CODEC;
+    }
+    /*?}*/
+
     public BlockRenderType getRenderType(BlockState state) {
         return BlockRenderType.MODEL;
-    }
-
-    @Nullable
-    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-        return new RedstoneBlockEntity(pos, state);
-    }
-
-    @Nullable
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-        /*? if forge {*/
-        if (type == RegistryHelper.REDSTONE_BLOCK_ENTITY.get()) {
-        /*?}*/
-        /*? if fabric {*/
-        /*if (type == RegistryHelper.REDSTONE_BLOCK_ENTITY) {
-        *//*?}*/
-            return (BlockEntityTicker<T>) RedstoneBlockEntity::tick;
-        }
-
-        return null;
     }
 
     @Override
@@ -77,11 +70,19 @@ public class RedstoneBlock extends BlockWithEntity {
         }
     }
 
-    @Override
-    public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
-        if(!world.isClient()) {
-            telemetry.redstoneBlockPlaced();
+    public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+        world.setBlockState(pos, state.with(POWER_STATE, currentState.getState()), 3);
+        world.updateNeighbors(pos, world.getBlockState(pos).getBlock());
+        if(state.getBlock() == this) {
+            world.scheduleBlockTick(pos, this, TICK_DELAY_BETWEEN_CHECKS);
         }
     }
 
+    @Override
+    public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
+        if(!world.isClient()) {
+            world.scheduleBlockTick(pos, this, TICK_DELAY_BETWEEN_CHECKS);
+            telemetry.redstoneBlockPlaced();
+        }
+    }
 }

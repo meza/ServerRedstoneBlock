@@ -68,9 +68,9 @@ jobs:
 
       - name: "📎 Copy resources"
         run: |
-          cp -rf "versions/1.21-fabric/src" "versions/1.21-neoforge/src"
-          cp -rf "versions/1.21.4-fabric/src" "versions/1.21.4-neoforge/src"
-          cp -rf "versions/1.21.4-fabric/src" "versions/1.21.4-forge/src"
+          cp -rfv "versions/1.21-fabric/src" "versions/1.21-neoforge/src"
+          cp -rfv "versions/1.21.4-fabric/src" "versions/1.21.4-neoforge/src"
+          cp -rfv "versions/1.21.4-fabric/src" "versions/1.21.4-forge/src"
 
       - name: "🏗️ Build, Test & Release"
         if: ${{ steps.get-next-version.outputs.new-release-published == 'true' }}

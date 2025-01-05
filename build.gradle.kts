@@ -436,7 +436,7 @@ afterEvaluate {
         classpath = classpath.filter { !it.toString().contains("\\org.lwjgl\\") }
     }
 
-    if (!(isForge && minecraftVersion.equals("1.21.4"))) {
+    if (tasks.findByName("runGameTestServer") != null) {
         tasks.named<JavaExec>("runGameTestServer") {
             classpath = classpath.filter { !it.toString().contains("\\org.lwjgl\\") }
         }

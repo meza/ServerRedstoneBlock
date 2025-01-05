@@ -20,13 +20,13 @@ import static net.fabricmc.fabric.api.gametest.v1.FabricGameTest.EMPTY_STRUCTURE
 
 import net.minecraft.block.*;
 /*? if >=1.21.2 {*/
-/*import net.minecraft.recipe.NetworkRecipeId;
+import net.minecraft.recipe.NetworkRecipeId;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 
-*//*?}*/
+/*?}*/
 import net.minecraft.recipe.RecipeEntry;
 import net.minecraft.recipe.RecipeManager;
 import net.minecraft.test.GameTest;
@@ -264,12 +264,12 @@ public class E2ETests {
     public static void isRecipePresent(TestContext ctx) {
 
         /*? if >= 1.21.2 {*/
-        /*RegistryKey<Recipe<?>> recipeKey = RegistryKey.of(RegistryKeys.RECIPE, MAIN_ID);
+        RegistryKey<Recipe<?>> recipeKey = RegistryKey.of(RegistryKeys.RECIPE, MAIN_ID);
         Optional<RecipeEntry<?>> recipe = ctx.getWorld().getServer().getRecipeManager().get(recipeKey);
-        *//*?} else {*/
-        RecipeManager recipeManager = ctx.getWorld().getServer().getRecipeManager();
+        /*?} else {*/
+        /*RecipeManager recipeManager = ctx.getWorld().getServer().getRecipeManager();
         Optional<RecipeEntry<?>> recipe = recipeManager.get(MAIN_ID);
-        /*?}*/
+        *//*?}*/
         ctx.assertTrue(recipe.isPresent(), String.format("Recipe is not present. Got %s", recipe));
         ctx.complete();
     }

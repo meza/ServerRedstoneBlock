@@ -179,7 +179,8 @@ loom {
                 property("forge.enableGameTest", "true")
             }
         }
-        if (!(isForge && stonecutter.eval(stonecutter.current.version, "=1.21.4"))) {
+        //if (!(isForge && stonecutter.eval(stonecutter.current.version, "=1.21.4"))) {
+        if (!(isForge)) {
             create("gameTestServer") {
                 name("Game Test Server")
                 server()

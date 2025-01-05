@@ -188,7 +188,7 @@ class ModPlugin : Plugin<Project> {
         }
 
         val packFileData = GsonBuilder().setPrettyPrinting().create().toJson(packMCMeta)
-
+        Files.createDirectory(outputFilePath.toPath().parent);
         Files.writeString(outputFilePath.toPath(), packFileData, java.nio.file.StandardOpenOption.CREATE, java.nio.file.StandardOpenOption.TRUNCATE_EXISTING)
 
         return packFileData;

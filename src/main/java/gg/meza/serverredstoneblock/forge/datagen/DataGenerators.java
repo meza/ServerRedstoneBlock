@@ -23,8 +23,8 @@ public class DataGenerators {
         CompletableFuture<RegistryWrapper.WrapperLookup> lookupProvider = event.getLookupProvider();
 
         generator.addProvider(event.includeServer(), new BlockTagProvider(output, lookupProvider, existingFileHelper));
-        generator.addProvider(event.includeServer(), BlockLootTableProvider.create(output/^? if >= 1.21 {^/, lookupProvider/^?}^/));
-        generator.addProvider(event.includeServer(), new RecipeProvider(output/^? if >= 1.21 {^/, lookupProvider/^?}^/));
+        generator.addProvider(event.includeServer(), BlockLootTableProvider.create(output/^? if >= 1.21 {^//^, lookupProvider^//^?}^/));
+        generator.addProvider(event.includeServer(), new RecipeProvider(output/^? if >= 1.21 {^//^, lookupProvider^//^?}^/));
 
         /^? if >= 1.21.4 {^/
         /^generator.addProvider(event.includeClient(), new ModelProvider(output));

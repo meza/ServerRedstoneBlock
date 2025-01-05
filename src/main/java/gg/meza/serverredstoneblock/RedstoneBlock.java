@@ -1,8 +1,8 @@
 package gg.meza.serverredstoneblock;
 
 /*? if >=1.21 {*/
-import com.mojang.serialization.MapCodec;
-/*?}*/
+/*import com.mojang.serialization.MapCodec;
+*//*?}*/
 
 /*? if fabric {*/
 import gg.meza.serverredstoneblock.fabric.RegistryHelper;
@@ -28,8 +28,8 @@ import static gg.meza.serverredstoneblock.ServerRedstoneBlock.telemetry;
 
 public class RedstoneBlock extends Block {
     /*? if >=1.21 {*/
-    public static final MapCodec<RedstoneBlock> CODEC = createCodec(RedstoneBlock::new);
-    /*?}*/
+    /*public static final MapCodec<RedstoneBlock> CODEC = createCodec(RedstoneBlock::new);
+    *//*?}*/
     public static final EnumProperty<ServerPowerState> POWER_STATE = EnumProperty.of("power_state", ServerPowerState.class);
     public static final int TICK_DELAY_BETWEEN_CHECKS = 20;
     public static ServerPowerState powerState;
@@ -41,10 +41,10 @@ public class RedstoneBlock extends Block {
     }
 
     /*? if >=1.21 {*/
-    public MapCodec<RedstoneBlock> getCodec() {
+    /*public MapCodec<RedstoneBlock> getCodec() {
         return CODEC;
     }
-    /*?}*/
+    *//*?}*/
 
     public BlockRenderType getRenderType(BlockState state) {
         return BlockRenderType.MODEL;

@@ -25,8 +25,8 @@ import net.minecraft.util.Identifier;
 import net.minecraftforge.common.crafting.conditions.IConditionBuilder;
 
 /^? if >= 1.21 {^/
-import net.minecraft.registry.RegistryWrapper;
-/^?}^/
+/^import net.minecraft.registry.RegistryWrapper;
+^//^?}^/
 
 import java.util.concurrent.CompletableFuture;
 
@@ -41,8 +41,8 @@ import static gg.meza.serverredstoneblock.forge.RegistryHelper.REDSTONE_BLOCK;
 
     ^//^?} else {^/
 public class RecipeProvider extends net.minecraft.data.server.recipe.RecipeProvider implements IConditionBuilder {
-    public RecipeProvider(DataOutput output/^? if >= 1.21 {^/, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookupFuture/^?}^/) {
-        super(output/^? if >= 1.21 {^/, registryLookupFuture/^?}^/);
+    public RecipeProvider(DataOutput output/^? if >= 1.21 {^//^, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookupFuture^//^?}^/) {
+        super(output/^? if >= 1.21 {^//^, registryLookupFuture^//^?}^/);
     }
     /^?}^/
 

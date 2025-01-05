@@ -10,8 +10,8 @@ import net.minecraft.data.server.loottable.BlockLootTableGenerator;
 
 /^? if >= 1.21 {^/
 
-import net.minecraft.registry.RegistryWrapper;
-/^?}^/
+/^import net.minecraft.registry.RegistryWrapper;
+^//^?}^/
 
 import net.minecraft.resource.featuretoggle.FeatureFlags;
 import net.minecraftforge.registries.RegistryObject;
@@ -23,8 +23,8 @@ import static gg.meza.serverredstoneblock.forge.RegistryHelper.REDSTONE_BLOCK;
 
 
 public class LootTableGenerator extends BlockLootTableGenerator {
-    public LootTableGenerator(/^? if >= 1.21 {^/RegistryWrapper.WrapperLookup wrapperLookup/^?}^/) {
-        super(Set.of(), FeatureFlags.DEFAULT_ENABLED_FEATURES/^? if >= 1.21 {^/, wrapperLookup/^?}^/);
+    public LootTableGenerator(/^? if >= 1.21 {^//^RegistryWrapper.WrapperLookup wrapperLookup^//^?}^/) {
+        super(Set.of(), FeatureFlags.DEFAULT_ENABLED_FEATURES/^? if >= 1.21 {^//^, wrapperLookup^//^?}^/);
     }
 
     @Override

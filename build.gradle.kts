@@ -55,7 +55,7 @@ val isBeta = "next" in version.toString()
 
 val testserverDir = "../../run/testserver/${loader}"
 val testClientDir = "../../run/testclient/${loader}"
-val generatedResources = "src/generated"
+val generatedResources = "src/main/generated"
 
 base { archivesName.set("${mod.id}-${loader}") }
 
@@ -94,6 +94,7 @@ if (isFabric) {
             /*? if >= 1.21.4 {*/
             client = true
             /*? }*/
+            outputDirectory.set(project.file(generatedResources))
         }
     }
 }
@@ -129,8 +130,8 @@ loom {
             create("Datagen") {
                 data()
                 programArgs("--all", "--mod", mod.id)
-                programArgs("--output", project.file(generatedResources).toString())
-                programArgs("--existing", rootProject.file("src/main/resources").toString())
+                programArgs("--output", project.file(generatedResources).absolutePath)
+                programArgs("--existing", rootProject.file("src/main/resources").absolutePath)
                 property("forge.logging.console.level", "debug")
                 property("forge.logging.markers", "REGISTRIES")
             }
@@ -141,18 +142,17 @@ loom {
                 create("ServerDatagen") {
                     serverData()
                     programArgs("--mod", mod.id)
-                    programArgs("--output", project.file(generatedResources).toString())
+                    programArgs("--output", project.file(generatedResources).absolutePath)
                     property("neoforge.logging.console.level", "debug")
                     property("neoforge.logging.markers", "REGISTRIES")
                 }
                 create("CliteDatagen") {
                     clientData()
                     programArgs("--mod", mod.id)
-                    programArgs("--output", project.file(generatedResources).toString())
+                    programArgs("--output", project.file(generatedResources).absolutePath)
                     property("neoforge.logging.console.level", "debug")
                     property("neoforge.logging.markers", "REGISTRIES")
                 }
-
 
 
             } else {
@@ -179,31 +179,26 @@ loom {
                 property("forge.enableGameTest", "true")
             }
         }
+        if (!(isForge && stonecutter.eval(stonecutter.current.version, "=1.21.4"))) {
+            create("gameTestServer") {
+                name("Game Test Server")
+                server()
+                runDir = testserverDir
+                if (isFabric) {
+                    vmArg("-Dfabric-api.gametest")
+                    vmArg("-Dfabric-api.gametest.report-file=${rootProject.file("build/junit.xml")}");
+                }
+                if (isForge) {
+                    property("forge.enabledGameTestNamespaces", mod.id)
+                    property("forge.enableGameTest", "true")
+                    property("forge.gameTestServer", "true")
+                }
 
-        create("gameTestServer") {
-            name("Game Test Server")
-            server()
-            runDir = testserverDir
-            if (isFabric) {
-                vmArg("-Dfabric-api.gametest")
-                vmArg("-Dfabric-api.gametest.report-file=${rootProject.file("build/junit.xml")}");
-            }
-            if (isForge) {
-                property("forge.enabledGameTestNamespaces", mod.id)
-                property("forge.enableGameTest", "true")
-                property("forge.gameTestServer", "true")
-                // Logging
-//                property("forge.logging.console.level", "debug")
-//                property("forge.logging.markers", "REGISTRIES")
-            }
-
-            if (isNeoforge) {
-                property("neoforge.enabledGameTestNamespaces", mod.id)
-                property("neoforge.enableGameTest", "true")
-                property("neoforge.gameTestServer", "true")
-                // Logging
-//                property("neoforge.logging.console.level", "debug")
-//                property("neoforge.logging.markers", "REGISTRIES")
+                if (isNeoforge) {
+                    property("neoforge.enabledGameTestNamespaces", mod.id)
+                    property("neoforge.enableGameTest", "true")
+                    property("neoforge.gameTestServer", "true")
+                }
             }
         }
     }
@@ -252,33 +247,9 @@ val buildAndCollect = tasks.register<Copy>("buildAndCollect") {
 
 //if (isNeoforge && stonecutter.eval(stonecutter.current.version, ">=1.21.4")) {
 //    tasks.register("runDatagen") {
-//        dependsOn(project.tasks.named("ServerDatagen"), project.tasks.named("CliteDatagen"))
+//        dependsOn(project.tasks.named("runServerDatagen"), project.tasks.named("runClientDatagen"))
 //    }
 //}
-tasks.register("buildActive") {
-    group = "project"
-    dependsOn(buildAndCollect)
-}
-tasks.register("runActive") {
-    group = "project"
-    dependsOn(tasks.named("runClient"))
-}
-
-tasks.register("dataGenActive") {
-    group = "project"
-    dependsOn(tasks.named("runDatagen"))
-}
-
-tasks.register("testActiveClient") {
-    group = "project"
-    dependsOn(tasks.named("runGameTestClient"))
-}
-
-tasks.register("testActiveServer") {
-    group = "project"
-    dependsOn(tasks.named("runGameTestServer"))
-}
-
 
 
 if (stonecutter.current.isActive) {
@@ -301,9 +272,11 @@ if (stonecutter.current.isActive) {
         dependsOn(tasks.named("runGameTestClient"))
     }
 
-    rootProject.tasks.register("testActiveServer") {
-        group = "project"
-        dependsOn(tasks.named("runGameTestServer"))
+    if (!(isForge && minecraftVersion.equals("1.21.4"))) {
+        rootProject.tasks.register("testActiveServer") {
+            group = "project"
+            dependsOn(tasks.named("runGameTestServer"))
+        }
     }
 }
 
@@ -322,7 +295,8 @@ tasks.processResources {
         "description" to mod.description,
         "version" to mod.version,
         "minecraftVersion" to minecraftVersion,
-        "packVersion" to getResourceVersionFor(minecraftVersion)
+        "packVersion" to getResourceVersionFor(minecraftVersion),
+        "fabricVersion" to mod.prop("fabric_version")
     )
     filesMatching(listOf("fabric.mod.json", "META-INF/mods.toml", "META-INF/neoforge.mods.toml")) { expand(map) }
 
@@ -462,8 +436,10 @@ afterEvaluate {
         classpath = classpath.filter { !it.toString().contains("\\org.lwjgl\\") }
     }
 
-    tasks.named<JavaExec>("runGameTestServer") {
-        classpath = classpath.filter { !it.toString().contains("\\org.lwjgl\\") }
+    if (!(isForge && minecraftVersion.equals("1.21.4"))) {
+        tasks.named<JavaExec>("runGameTestServer") {
+            classpath = classpath.filter { !it.toString().contains("\\org.lwjgl\\") }
+        }
     }
 }
 

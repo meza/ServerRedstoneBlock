@@ -2,9 +2,13 @@
 /*package gg.meza.serverredstoneblock.forge;
 
 import gg.meza.serverredstoneblock.RedstoneBlockItem;
+import gg.meza.serverredstoneblock.ServerRedstoneBlock;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.util.Identifier;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -28,9 +32,15 @@ public class RegistryHelper {
     }
 
     private static <T extends Block> RegistryObject<Item> registerBlockItem(String name, RegistryObject<T> block, Class<? extends BlockItem> blockItemClass) {
+
         return ITEMS.register(name, () -> {
             try {
-                return blockItemClass.getConstructor(Block.class, Item.Settings.class).newInstance(block.get(), new Item.Settings());
+                /^? if >=1.21.4 {^/
+                /^Identifier id = Identifier.of(ServerRedstoneBlock.MOD_ID, name);
+                RegistryKey<Item> key = RegistryKey.of(RegistryKeys.ITEM, id);
+                ^//^?}^/
+
+                return blockItemClass.getConstructor(Block.class, Item.Settings.class).newInstance(block.get(), new Item.Settings()/^? if >=1.21.4 {^//^.registryKey(key).useBlockPrefixedTranslationKey()^//^?}^/);
             } catch (Exception e) {
                 throw new RuntimeException("Failed to create block item", e);
             }

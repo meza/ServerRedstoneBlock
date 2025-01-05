@@ -31,9 +31,9 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 *//*?}*/
 
 /*? if >=1.21.2 {*/
-import net.minecraft.registry.RegistryKey;
+/*import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
-/*?}*/
+*//*?}*/
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -74,16 +74,16 @@ public class ServerRedstoneBlock {
     private static int MINUTE_IN_TICKS = 1200;
 
     /*? if <1.21 {*/
-    /*public static Identifier MAIN_ID = new Identifier(ServerRedstoneBlock.MOD_ID, blockName);
-     *//*?} else {*/
-    public static Identifier MAIN_ID = Identifier.of(ServerRedstoneBlock.MOD_ID, blockName);
-    /*? if >=1.21.2 {*/
-    public static final RegistryKey<Block> BLOCK_REGISTRY_KEY = RegistryKey.of(RegistryKeys.BLOCK, MAIN_ID);
-    /*?}*/
-    /*?}*/
+    public static Identifier MAIN_ID = new Identifier(ServerRedstoneBlock.MOD_ID, blockName);
+     /*?} else {*/
+    /*public static Identifier MAIN_ID = Identifier.of(ServerRedstoneBlock.MOD_ID, blockName);
+    /^? if >=1.21.2 {^/
+    /^public static final RegistryKey<Block> BLOCK_REGISTRY_KEY = RegistryKey.of(RegistryKeys.BLOCK, MAIN_ID);
+    ^//^?}^/
+    *//*?}*/
 
     public static final Supplier<Block> blockSupplier = () -> new RedstoneBlock(
-            AbstractBlock.Settings.copy(Blocks.REDSTONE_BLOCK)/*? if >=1.21.2 {*/.registryKey(BLOCK_REGISTRY_KEY)/*?}*/
+            AbstractBlock.Settings.copy(Blocks.REDSTONE_BLOCK)/*? if >=1.21.2 {*//*.registryKey(BLOCK_REGISTRY_KEY)*//*?}*/
     );
 
     /*? if forge {*/

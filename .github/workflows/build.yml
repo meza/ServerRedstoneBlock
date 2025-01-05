@@ -60,7 +60,7 @@ jobs:
 
       - name: "🔨 Data Gen"
         run: |
-          ./gradlew chiseledDatagen
+          ./gradlew chiseledDatagen --stacktrace
 
       - name: "📎 Copy resources"
         run: |
@@ -82,7 +82,7 @@ jobs:
 
       - name: "🧪 Run Dev Build"
         if: ${{ steps.get-next-version.outputs.new-release-published != 'true' }}
-        run: ./gradlew chiseledTestE2E chiseledBuildAndCollect
+        run: ./gradlew chiseledTestE2E chiseledBuildAndCollect --stacktrace
 
       - name: "🕵️‍♂️ Collect jars"
         uses: actions/upload-artifact@v4

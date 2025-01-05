@@ -1,9 +1,0 @@
-{
-    "pack": {
-        "description": "${description}",
-        "pack_format": ${packVersion},
-        "supported_formats": {
-            "min_inclusive": ${packVersion}
-        }
-    }
-}

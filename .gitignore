@@ -1,6 +1,6 @@
 secrets.gradle
 # gradle
-
+.kotlin/
 .gradle/
 build/
 out/

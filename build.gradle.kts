@@ -1,107 +1,29 @@
-import java.util.*
-
-fun String.upperCaseFirst() = replaceFirstChar { if (it.isLowerCase()) it.uppercaseChar() else it }
+import gg.meza.stonecuttermod.*;
 
 plugins {
+    id("java")
     id("idea")
+    id("gg.meza.stonecuttermod")
     id("me.modmuss50.mod-publish-plugin")
-    id("dev.architectury.loom")
-}
-
-val loader = project.name.substringAfterLast("-").lowercase()
-project.ext["loom.platform"] = loader
-
-fun getResourceVersionFor(version: String): Int {
-    return when (version) {
-        "1.20.2" -> 18
-        "1.21" -> 34
-        "1.21.4" -> 46
-        else -> 18
-    }
 }
 
 val minecraftVersion = stonecutter.current.version
-val customPropsFile = rootProject.file("versions/dependencies/${minecraftVersion}.properties")
-
-if (customPropsFile.exists()) {
-    val customProps = Properties().apply {
-        customPropsFile.inputStream().use { load(it) }
-    }
-    customProps.forEach { key, value ->
-        project.extra[key.toString()] = value
-    }
-}
-
-class ModData {
-    val id: String get() = property("mod.id").toString()
-    val name: String get() = property("mod.name").toString()
-    val description: String get() = property("mod.description").toString()
-    val version: String get() = property("mod.version").toString()
-    val group: String get() = property("mod.group").toString()
-    fun prop(key: String) = project.extra[key].toString()
-}
-
-val mod = ModData()
-val isFabric = loader == "fabric"
-val isForge = loader == "forge"
-val isNeoforge = loader == "neoforge"
-val isForgeLike = isNeoforge || isForge
-
-version = "${mod.version}+mc${minecraftVersion}"
-group = mod.group
 
 val isBeta = "next" in version.toString()
 
-val testserverDir = "../../run/testserver/${loader}"
-val testClientDir = "../../run/testclient/${loader}"
+val testserverDir = "../../run/testserver/${mod.loader}"
+val testClientDir = "../../run/testclient/${mod.loader}"
 val generatedResources = "src/main/generated"
 
-base { archivesName.set("${mod.id}-${loader}") }
+base { archivesName.set("${mod.id}-${mod.loader}") }
 
-stonecutter {
-    const("fabric", loader == "fabric")
-    const("forge", loader == "forge")
-    const("neoforge", loader == "neoforge")
-    const("forgeLike", isForgeLike)
-    val j21 = eval(minecraftVersion, ">=1.20.6")
-    java {
-//        withSourcesJar()
-        sourceCompatibility = if (j21) JavaVersion.VERSION_21 else JavaVersion.VERSION_17
-        targetCompatibility = if (j21) JavaVersion.VERSION_21 else JavaVersion.VERSION_17
-
-        toolchain {
-            if (j21) {
-                languageVersion.set(JavaLanguageVersion.of(21))
-            } else {
-                languageVersion.set(JavaLanguageVersion.of(17))
-            }
-        }
-    }
-}
-
-repositories {
-    mavenCentral()
-    maven("https://maven.fabricmc.net/")
-    maven("https://maven.architectury.dev")
-    maven("https://maven.minecraftforge.net")
-    maven("https://maven.neoforged.net/releases/")
-}
-
-if (isFabric) {
+if (mod.isFabric) {
     fabricApi {
         configureDataGeneration {
             /*? if >= 1.21.4 {*/
             client = true
             /*? }*/
             outputDirectory.set(project.file(generatedResources))
-        }
-    }
-}
-
-if (isForgeLike) {
-    sourceSets {
-        main {
-            resources.srcDir(project.file(generatedResources))
         }
     }
 }
@@ -135,7 +57,7 @@ loom {
                 property("forge.logging.markers", "REGISTRIES")
             }
         }
-        if (isNeoforge && false) {
+        if (mod.isNeoforge && false) {
             if (stonecutter.eval(stonecutter.current.version, ">=1.21.4")) {
 
                 create("ServerDatagen") {
@@ -169,32 +91,32 @@ loom {
         create("gameTestClient") {
             client()
             runDir = testClientDir
-            if (isFabric) {
+            if (mod.isFabric) {
                 vmArg("-Dfabric-api.gametest")
                 vmArg("-Dfabric-api.gametest.report-file=${rootProject.file("build/junit.xml")}");
             }
-            if (isForge) {
+            if (mod.isForge) {
                 property("forge.enabledGameTestNamespaces", mod.id)
                 property("forge.enableGameTest", "true")
             }
         }
         //if (!(isForge && stonecutter.eval(stonecutter.current.version, "=1.21.4"))) {
-        if (!(isForge)) {
+        if (!(mod.isForge)) {
             create("gameTestServer") {
                 name("Game Test Server")
                 server()
                 runDir = testserverDir
-                if (isFabric) {
+                if (mod.isFabric) {
                     vmArg("-Dfabric-api.gametest")
                     vmArg("-Dfabric-api.gametest.report-file=${rootProject.file("build/junit.xml")}");
                 }
-                if (isForge) {
+                if (mod.isForge) {
                     property("forge.enabledGameTestNamespaces", mod.id)
                     property("forge.enableGameTest", "true")
                     property("forge.gameTestServer", "true")
                 }
 
-                if (isNeoforge) {
+                if (mod.isNeoforge) {
                     property("neoforge.enabledGameTestNamespaces", mod.id)
                     property("neoforge.enableGameTest", "true")
                     property("neoforge.gameTestServer", "true")
@@ -204,16 +126,9 @@ loom {
     }
 }
 
-
-if (isForge) {
-    configurations.configureEach {
-        resolutionStrategy.force("net.sf.jopt-simple:jopt-simple:5.0.4")
-    }
-}
-
 dependencies {
     minecraft("com.mojang:minecraft:$minecraftVersion")
-    if (!isNeoforge) {
+    if (!mod.isNeoforge) {
         mappings("net.fabricmc:yarn:${mod.prop("yarn_mappings")}:v2")
     } else {
         mappings(loom.layered {
@@ -222,18 +137,18 @@ dependencies {
         })
     }
 
-    if (isForge) {
+    if (mod.isForge) {
         println("Adding Forge dependencies")
         "forge"("net.minecraftforge:forge:${mod.prop("forge_version")}")
     }
-    if (isFabric) {
+    if (mod.isFabric) {
         println("Adding Fabric dependencies")
         modImplementation("net.fabricmc:fabric-loader:${mod.prop("loader_version")}")
         modApi("net.fabricmc.fabric-api:fabric-api:${mod.prop("fabric_version")}")
         modApi("net.fabricmc.fabric-api:fabric-gametest-api-v1:${mod.prop("fabric_version")}")
     }
 
-    if (isNeoforge) {
+    if (mod.isNeoforge) {
         "neoForge"("net.neoforged:neoforge:${mod.prop("neoforge_version")}")
     }
 }
@@ -272,7 +187,7 @@ if (stonecutter.current.isActive) {
         dependsOn(tasks.named("runGameTestClient"))
     }
 
-    if (!(isForge && minecraftVersion.equals("1.21.4"))) {
+    if (!(mod.isForge && minecraftVersion.equals("1.21.4"))) {
         rootProject.tasks.register("testActiveServer") {
             group = "project"
             dependsOn(tasks.named("runGameTestServer"))
@@ -280,117 +195,15 @@ if (stonecutter.current.isActive) {
     }
 }
 
-
-tasks.processResources {
-    outputs.cacheIf { false }
-    val oldResources = stonecutter.eval(stonecutter.current.version, "<1.21")
-
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
-
-    println(String.format("Current version is %d", getResourceVersionFor(minecraftVersion)))
-
-    val map = mapOf(
-        "id" to mod.id,
-        "name" to mod.name,
-        "description" to mod.description,
-        "version" to mod.version,
-        "minecraftVersion" to minecraftVersion,
-        "packVersion" to getResourceVersionFor(minecraftVersion),
-        "fabricVersion" to mod.prop("fabric_version")
-    )
-    filesMatching(listOf("fabric.mod.json", "META-INF/mods.toml", "META-INF/neoforge.mods.toml")) { expand(map) }
-
-    when {
-        isFabric -> {
-            exclude("META-INF/mods.toml", "META-INF/neoforge.mods.toml")
-        }
-
-        isNeoforge -> {
-            exclude("fabric.mod.json", "META-INF/mods.toml")
-        }
-
-        isForge -> {
-            exclude("fabric.mod.json", "META-INF/neoforge.mods.toml")
-            if (oldResources) {
-                filesMatching("pack.1.20.3-.mcmeta") {
-                    path = path.replace("pack.1.20.3-.mcmeta", "pack.mcmeta")
-                    expand(map)
-                }
-                exclude("pack.1.20.3+.mcmeta")
-            } else {
-                filesMatching("pack.1.20.3+.mcmeta") {
-                    path = path.replace("pack.1.20.3+.mcmeta", "pack.mcmeta")
-                    expand(map)
-                }
-                exclude("pack.1.20.3-.mcmeta")
-            }
-        }
-
-    }
-
-
-    val resourceChanges = mapOf(
-        "itemIdentifier" to if (oldResources) "item" else "id"
-    )
-
-    filesMatching("data/**/*.json") {
-        expand(resourceChanges)
-    }
-
-    if (oldResources) {
-        println("Using old resource system")
-
-        val renameMappings = mapOf(
-            "data/minecraft/tags/block" to "data/minecraft/tags/blocks",
-            "data/${mod.id}/advancement/recipe" to "data/${mod.id}/advancement/recipes",
-            "data/${mod.id}/advancement" to "data/${mod.id}/advancements",
-            "data/${mod.id}/loot_table" to "data/${mod.id}/loot_tables",
-            "data/${mod.id}/recipe" to "data/${mod.id}/recipes",
-            "data/${mod.id}/structure" to "data/${mod.id}/structures"
-        )
-
-        renameMappings.forEach { (source, destination) ->
-            filesMatching("$source/**") {
-                path = path.replace(source, destination)
-            }
-        }
-
-        doLast {
-            val buildResourcesDir = layout.buildDirectory.dir("resources/main").get().asFile
-
-            if (buildResourcesDir.exists()) {
-                println("Cleaning up empty directories in ${buildResourcesDir.path}")
-
-                // Recursively delete empty directories
-                buildResourcesDir.walkBottomUp().filter { it.isDirectory && it.listFiles().isNullOrEmpty() }
-                    .forEach { dir ->
-                        dir.delete()
-                    }
-            }
-        }
-    }
-}
-
-
-
-tasks.register("configureMinecraft") {
+tasks.register<ConfigureMinecraftClient>("configureMinecraft") {
     group = "project"
-    val runDir = "${rootProject.projectDir}/run"
-    val optionsFile = file("$runDir/options.txt")
 
-    doFirst {
-        println("Configuring Minecraft options...")
-        optionsFile.parentFile.mkdirs()
-        optionsFile.writeText(
-            """
-            guiScale:3
-            fov=90
-            narrator:0
-            soundCategory_music:0.0
-            darkMojangStudiosBackground:true
-            """.trimIndent()
-        )
-    }
+    additionalLines = mapOf(
+        "joinedFirstServer" to "true",
+        "pauseOnLostFocus" to "false",
+        "lastServer" to "127.0.0.1",
+        "soundDevice" to "OpenAL Soft on Game (TC-Helicon GoXLR)"
+    )
 }
 
 
@@ -403,17 +216,17 @@ publishMods {
         rootProject.file("changelog.md").takeIf { it.exists() }?.readText() ?: "No changelog provided."
     )
     file = tasks.remapJar.get().archiveFile
-    version = "${mod.version}+${loader}-${minecraftVersion}"
+    version = "${mod.version}+${mod.loader}-${minecraftVersion}"
     type.set(if (isBeta) BETA else STABLE)
-    modLoaders.add(loader)
-    displayName = "${mod.version} for ${loader.upperCaseFirst()} $minecraftVersion"
+    modLoaders.add(mod.loader)
+    displayName = "${mod.version} for ${mod.loader.upperCaseFirst()} $minecraftVersion"
 
     modrinth {
         accessToken = providers.environmentVariable("MODRINTH_TOKEN").orElse("")
         projectId = providers.environmentVariable("MODRINTH_ID").orElse("0")
         minecraftVersions.add(stonecutter.current.version)
-        announcementTitle = "Download ${mod.version}+${loader}-${minecraftVersion}from Modrinth"
-        if (isFabric) requires("fabric-api")
+        announcementTitle = "Download ${mod.version}+${mod.loader}-${minecraftVersion}from Modrinth"
+        if (mod.isFabric) requires("fabric-api")
     }
 
     curseforge {
@@ -423,22 +236,9 @@ publishMods {
         minecraftVersions.add(stonecutter.current.version)
         clientRequired = true
         serverRequired = false
-        announcementTitle = "Download ${mod.version}+${loader}-${minecraftVersion} from CurseForge"
-        if (isFabric) requires("fabric-api")
+        announcementTitle = "Download ${mod.version}+${mod.loader}-${minecraftVersion} from CurseForge"
+        if (mod.isFabric) requires("fabric-api")
     }
 
     dryRun = providers.environmentVariable("DO_PUBLISH").getOrElse("true").toBoolean()
-}
-
-afterEvaluate {
-    // Fix for an Architectury issue with LWJGL
-    tasks.runServer {
-        classpath = classpath.filter { !it.toString().contains("\\org.lwjgl\\") }
-    }
-
-    if (tasks.findByName("runGameTestServer") != null) {
-        tasks.named<JavaExec>("runGameTestServer") {
-            classpath = classpath.filter { !it.toString().contains("\\org.lwjgl\\") }
-        }
-    }
 }

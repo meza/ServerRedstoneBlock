@@ -7,10 +7,10 @@ plugins {
 stonecutter active "1.21.4-fabric" /* [SC] DO NOT EDIT */
 stonecutter.automaticPlatformConstants = true
 
-stonecutter.tree.nodes.forEach {
-    val loader = it.metadata.project.substringAfterLast("-")
-    it.ext["loom.platform"] = loader
-}
+//stonecutter.tree.nodes.forEach {
+//    val loader = it.metadata.project.substringAfterLast("-")
+//    it.ext["loom.platform"] = loader
+//}
 
 stonecutter registerChiseled tasks.register("chiseledBuild", stonecutter.chiseled) {
     group = "project"

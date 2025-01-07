@@ -1,16 +1,16 @@
 /*? if fabric {*/
-package gg.meza.serverredstoneblock.fabric.datagen;
+/*package gg.meza.serverredstoneblock.fabric.datagen;
 
 import com.google.gson.JsonObject;
 import gg.meza.serverredstoneblock.ServerPowerState;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-/*? if >=1.21.4 {*/
+/^? if >=1.21.4 {^/
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 import net.minecraft.client.data.*;
-/*?} else {*/
-/*import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
+/^?} else {^/
+/^import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.minecraft.data.client.*;
-*//*?}*/
+^//^?}^/
 
 import net.minecraft.util.Identifier;
 
@@ -65,4 +65,4 @@ public class ModelProvider extends FabricModelProvider {
     }
 }
 
-/*?}*/
+*//*?}*/

@@ -1,5 +1,5 @@
 /*? if fabric {*/
-package gg.meza.serverredstoneblock.fabric.datagen;
+/*package gg.meza.serverredstoneblock.fabric.datagen;
 
 import gg.meza.serverredstoneblock.fabric.RegistryHelper;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -20,4 +20,4 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
         getOrCreateTagBuilder(BlockTags.PICKAXE_MINEABLE).add(RegistryHelper.REDSTONE_BLOCK);
     }
 }
-/*?}*/
+*//*?}*/

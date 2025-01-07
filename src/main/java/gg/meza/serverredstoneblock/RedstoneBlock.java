@@ -5,8 +5,8 @@ import com.mojang.serialization.MapCodec;
 /*?}*/
 
 /*? if fabric {*/
-import gg.meza.serverredstoneblock.fabric.RegistryHelper;
-/*?}*/
+/*import gg.meza.serverredstoneblock.fabric.RegistryHelper;
+*//*?}*/
 /*? if forge {*/
 /*?}*/
 import net.minecraft.block.*;

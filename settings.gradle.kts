@@ -1,6 +1,6 @@
 pluginManagement {
     repositories {
-//        mavenLocal()
+        mavenLocal()
         mavenCentral()
         gradlePluginPortal()
         maven("https://maven.fabricmc.net/")
@@ -13,10 +13,12 @@ pluginManagement {
         maven("https://maven.shedaniel.me/")
     }
 }
-
 plugins {
     id("dev.kikugie.stonecutter") version "0.5"
 }
+
+//includeBuild("../minecraft-mod-gradle-plugin")
+
 
 stonecutter {
     centralScript = "build.gradle.kts"

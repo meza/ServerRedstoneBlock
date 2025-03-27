@@ -1,7 +1,7 @@
-import gg.meza.stonecuttermod.mod
+import gg.meza.stonecraft.mod
 
 plugins {
-    id("gg.meza.stonecuttermod")
+    id("gg.meza.stonecraft")
     id("me.modmuss50.mod-publish-plugin")
 }
 
@@ -26,3 +26,8 @@ publishMods {
         if (mod.isFabric) requires("fabric-api")
     }
 }
+
+//tasks.named("runClient") {
+//    logger.error("show this error")
+//    throw GradleException("Task execution disrupted and exited.")
+//}

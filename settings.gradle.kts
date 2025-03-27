@@ -14,11 +14,9 @@ pluginManagement {
     }
 }
 plugins {
+    id("gg.meza.stonecraft") version "0.7-SNAPSHOT"
     id("dev.kikugie.stonecutter") version "0.5"
 }
-
-//includeBuild("../minecraft-mod-gradle-plugin")
-
 
 stonecutter {
     centralScript = "build.gradle.kts"
@@ -32,8 +30,9 @@ stonecutter {
         mc("1.20.2", "fabric", "forge")
         mc("1.21", "fabric", "forge", "neoforge")
         mc("1.21.4", "fabric", "forge", "neoforge")
+        mc("1.21.5", "fabric", "neoforge")
 
-        vcsVersion = "1.21.4-fabric"
+        vcsVersion = "1.21.5-fabric"
     }
     create(rootProject)
 }

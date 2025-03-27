@@ -1,5 +1,5 @@
 /*? if neoforge && >= 1.21.4 {*/
-package gg.meza.serverredstoneblock.neoforge.datagen;
+/*package gg.meza.serverredstoneblock.neoforge.datagen;
 
 import gg.meza.serverredstoneblock.ServerRedstoneBlock;
 import net.minecraft.data.DataGenerator;
@@ -25,4 +25,4 @@ public class DataGenerators {
 
 }
 
-/*?}*/
+*//*?}*/

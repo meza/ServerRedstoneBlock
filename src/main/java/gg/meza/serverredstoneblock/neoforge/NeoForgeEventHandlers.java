@@ -1,5 +1,5 @@
 /*? if neoforge {*/
-package gg.meza.serverredstoneblock.neoforge;
+/*package gg.meza.serverredstoneblock.neoforge;
 
 import gg.meza.serverredstoneblock.ServerRedstoneBlock;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -39,4 +39,4 @@ public class NeoForgeEventHandlers {
         ServerRedstoneBlock.onServerTick(event.getServer().getOverworld());
     }
 }
-/*?}*/
+*//*?}*/

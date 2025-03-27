@@ -36,11 +36,11 @@ public class RegistryHelper {
         return ITEMS.register(name, () -> {
             try {
                 /^? if >=1.21.4 {^/
-                Identifier id = Identifier.of(ServerRedstoneBlock.MOD_ID, name);
+                /^Identifier id = Identifier.of(ServerRedstoneBlock.MOD_ID, name);
                 RegistryKey<Item> key = RegistryKey.of(RegistryKeys.ITEM, id);
-                /^?}^/
+                ^//^?}^/
 
-                return blockItemClass.getConstructor(Block.class, Item.Settings.class).newInstance(block.get(), new Item.Settings()/^? if >=1.21.4 {^/.registryKey(key).useBlockPrefixedTranslationKey()/^?}^/);
+                return blockItemClass.getConstructor(Block.class, Item.Settings.class).newInstance(block.get(), new Item.Settings()/^? if >=1.21.4 {^//^.registryKey(key).useBlockPrefixedTranslationKey()^//^?}^/);
             } catch (Exception e) {
                 throw new RuntimeException("Failed to create block item", e);
             }

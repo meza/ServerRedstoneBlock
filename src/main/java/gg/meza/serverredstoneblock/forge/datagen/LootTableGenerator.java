@@ -3,10 +3,10 @@
 
 import net.minecraft.block.Block;
 /^? if >= 1.21.4 {^/
-import net.minecraft.data.loottable.BlockLootTableGenerator;
-/^?} else {^/
-/^import net.minecraft.data.server.loottable.BlockLootTableGenerator;
-^//^?}^/
+/^import net.minecraft.data.loottable.BlockLootTableGenerator;
+^//^?} else {^/
+import net.minecraft.data.server.loottable.BlockLootTableGenerator;
+/^?}^/
 
 /^? if >= 1.21 {^/
 

@@ -27,10 +27,10 @@ public class DataGenerators {
         generator.addProvider(event.includeServer(), new RecipeProvider(output/^? if >= 1.21 {^/, lookupProvider/^?}^/));
 
         /^? if >= 1.21.4 {^/
-        generator.addProvider(event.includeClient(), new ModelProvider(output));
-        /^?} else {^/
-        /^generator.addProvider(event.includeClient(), new BlockStateProvider(output, existingFileHelper));
-        ^//^?}^/
+        /^generator.addProvider(event.includeClient(), new ModelProvider(output));
+        ^//^?} else {^/
+        generator.addProvider(event.includeClient(), new BlockStateProvider(output, existingFileHelper));
+        /^?}^/
         generator.addProvider(event.includeClient(), new EnglishLanguageProvider(output));
     }
 

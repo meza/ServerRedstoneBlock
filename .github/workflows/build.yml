@@ -82,7 +82,7 @@ jobs:
 
       - name: "🧪 Run Dev Build"
         if: ${{ steps.get-next-version.outputs.new-release-published != 'true' }}
-        run: ./gradlew chiseledTestE2E chiseledBuildAndCollect --stacktrace
+        run: ./gradlew chiseledGameTest chiseledBuildAndCollect --stacktrace
 
       - name: "🕵️‍♂️ Collect jars"
         uses: actions/upload-artifact@v4

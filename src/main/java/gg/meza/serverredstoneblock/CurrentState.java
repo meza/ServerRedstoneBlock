@@ -1,7 +1,5 @@
 package gg.meza.serverredstoneblock;
 
-import net.minecraft.block.BlockState;
-
 import static gg.meza.serverredstoneblock.ServerRedstoneBlock.telemetry;
 
 public class CurrentState {

@@ -1,15 +1,20 @@
 package gg.meza.serverredstoneblock;
 
 import net.minecraft.nbt.NbtCompound;
-/*? if >= 1.21 {*/
 import net.minecraft.registry.RegistryWrapper;
-/*?}*/
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.PersistentStateManager;
+/*? if >=1.21.5 {*/
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.util.dynamic.Codecs;
+import net.minecraft.world.PersistentStateType;
+/*?}*/
 import net.minecraft.world.World;
 
 import java.util.UUID;
+
+import static gg.meza.serverredstoneblock.ServerRedstoneBlock.MOD_ID;
 
 public class WorldInfoSaveData extends PersistentState {
     public String worldId = UUID.randomUUID().toString();
@@ -21,12 +26,24 @@ public class WorldInfoSaveData extends PersistentState {
             WorldInfoSaveData::load,
             null
     );
-    *//*?} else {*/
-    private static Type<WorldInfoSaveData> type = new Type<>(
+    *//*?} elif < 1.21.5 {*/
+    /*private static Type<WorldInfoSaveData> type = new Type<>(
             WorldInfoSaveData::new,
             WorldInfoSaveData::load,
             null
     );
+    *//*?} else {*/
+    public static PersistentStateType<WorldInfoSaveData> getType() {
+        return new PersistentStateType<>(
+                MOD_ID,
+                (PersistentState.Context ctx) -> WorldInfoSaveData.create(),
+                (PersistentState.Context ctx) -> Codecs.fromOps(NbtOps.INSTANCE).xmap(
+                        nbtElement -> load((NbtCompound) nbtElement, ctx.getWorldOrThrow().getRegistryManager()),
+                        manager -> manager.writeNbt(new NbtCompound(), ctx.getWorldOrThrow().getRegistryManager())
+                ),
+                null
+        );
+    }
     /*?}*/
 
 
@@ -39,11 +56,15 @@ public class WorldInfoSaveData extends PersistentState {
 
     public static WorldInfoSaveData load(NbtCompound tag/*? if >=1.21 {*/, RegistryWrapper.WrapperLookup registryLookup/*?}*/) {
         WorldInfoSaveData data = create();
-        data.worldId = tag.getString("worldId");
+        /*? if < 1.21.5 {*/
+        /*data.worldId = tag.getString("worldId");
+        *//*?} else {*/
+        data.worldId = tag.getString("worldId", UUID.randomUUID().toString());
+        /*?}*/
         return data;
     }
 
-    @Override
+    /*? if < 1.21.5 {*//*@Override*//*?}*/
     public NbtCompound writeNbt(NbtCompound nbt/*? if >=1.21 {*/, RegistryWrapper.WrapperLookup registryLookup/*?}*/) {
         nbt.putString("worldId", worldId);
         return nbt;
@@ -60,9 +81,16 @@ public class WorldInfoSaveData extends PersistentState {
 
     public static String getWorldId(MinecraftServer server) {
         PersistentStateManager persistentStateManager = server.getWorld(World.OVERWORLD).getPersistentStateManager();
-        WorldInfoSaveData state = persistentStateManager.getOrCreate(type, "serverredstoneblock");
+        /*? if < 1.21.5 {*/
+        /*WorldInfoSaveData state = persistentStateManager.getOrCreate(type, "serverredstoneblock");
         state.markDirty();
 
         return state.worldId;
+        *//*?} else {*/
+        WorldInfoSaveData state = persistentStateManager.getOrCreate(getType());
+        state.markDirty();
+
+        return state.worldId;
+        /*?}*/
     }
 }

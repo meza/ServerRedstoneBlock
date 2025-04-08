@@ -1,58 +1,50 @@
-/*? if fabric {*/
 package gg.meza.serverredstoneblock;
 
-/*? if forge {*/
-/*import gg.meza.serverredstoneblock.forge.RegistryHelper;
- *//*?}*/
+/*? if fabric {*/
+
+/*/^? if >=1.21.5 {^/
+/^import net.fabricmc.fabric.api.gametest.v1.GameTest;
+import net.minecraft.text.Text;
+^//^?}^/
+
+/^? if <1.21.5 {^/
+import net.minecraft.test.GameTest;
+import static net.fabricmc.fabric.api.gametest.v1.FabricGameTest.EMPTY_STRUCTURE;
+/^?}^/
+
+import static gg.meza.serverredstoneblock.fabric.RegistryHelper.REDSTONE_BLOCK;
+
+*//*?}*/
+
 
 /*? if neoforge {*/
 
-/*import gg.meza.serverredstoneblock.neoforge.RegistryHelper;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.RegisterGameTestsEvent;
-/^? if <1.21.5 {^/
-/^import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
-^//^?}^/
-*//*?}*/
+/*? if >=1.21.5 {*/
 
-/*? if fabric {*/
-import static gg.meza.serverredstoneblock.fabric.RegistryHelper.REDSTONE_BLOCK;
-/*? if <1.21.5 {*/
-/*import static net.fabricmc.fabric.api.gametest.v1.FabricGameTest.EMPTY_STRUCTURE;
- *//*?}*/
-import net.fabricmc.fabric.api.gametest.v1.GameTest;
-/*?}*/
-
-import net.minecraft.block.*;
-/*? if >=1.21.2 {*/
-import net.minecraft.recipe.NetworkRecipeId;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import gg.meza.serverredstoneblock.neoforge.RegistryHelper;
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.RedstoneWireBlock;
 import net.minecraft.recipe.Recipe;
-import net.minecraft.registry.Registries;
+import net.minecraft.recipe.RecipeEntry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
-
-/*?}*/
-import net.minecraft.recipe.RecipeEntry;
-import net.minecraft.recipe.RecipeManager;
-/*? if <1.21.5 {*/
-/*import net.minecraft.test.GameTest;
- *//*?}*/
-import net.minecraft.test.Batches;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.test.TestContext;
-/*? if >=1.21.5 {*/import net.minecraft.text.Text;/*?}*/
+import net.minecraft.test.TestData;
+import net.minecraft.test.TestEnvironmentDefinition;
+import net.minecraft.test.TestInstance;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.Optional;
 
-import static gg.meza.serverredstoneblock.ServerRedstoneBlock.*;
+import static gg.meza.serverredstoneblock.ServerRedstoneBlock.LOGGER;
+import static gg.meza.serverredstoneblock.ServerRedstoneBlock.MAIN_ID;
 
-/*? if forge {*/
-/*import net.minecraftforge.event.RegisterGameTestsEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.gametest.GameTestHolder;
-*//*?}*/
 
 /*? if forge {*/
 /*import static gg.meza.serverredstoneblock.ServerRedstoneBlock.MOD_ID;
@@ -62,7 +54,7 @@ import net.minecraftforge.gametest.GameTestHolder;
 /*? if neoforge && <1.21.5 {*/
 /*@PrefixGameTestTemplate(value = false)
  *//*?}*/
-public class E2ETests {
+public class E2ETests /*? if neoforge && >=1.21.5 {*/extends TestInstance/*?}*/ {
     public static final int FIRST_TICK = 40;
     public static final int SECOND_TICK = 60;
     public static final int THIRD_TICK = 80;
@@ -75,24 +67,65 @@ public class E2ETests {
     /*public static final String template = MOD_ID + ":empty";
      *//*?}*/
     /*? if neoforge {*/
-    /*public static final String template = "empty";
-     *//*?}*/
+    public static final String template = "empty";
+    /*?}*/
+
+    /*? if neoforge && >=1.21.5 {*/
+
+    public E2ETests(TestData<RegistryEntry<TestEnvironmentDefinition>> data) {
+        super(data);
+        LOGGER.info("Creating E2ETests");
+    }
+
+    public static final MapCodec<E2ETests> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+                    TestData.CODEC.forGetter(E2ETests::getData)
+            ).apply(instance, E2ETests::new)
+    );
+
+    @Override
+    public void start(TestContext context) {
+        LOGGER.info("Starting E2ETests");
+        stateTest(context);
+        directionality(context);
+        isRecipePresent(context);
+        multiBlockStateTest(context);
+
+        LOGGER.info("Finished starting E2ETests");
+        context.complete();
+    }
+
+    @Override
+    public MapCodec<? extends TestInstance> getCodec() {
+        return CODEC;
+    }
+
+    @Override
+    protected MutableText getTypeDescription() {
+        return Text.literal("E2ETests");
+    }
+    /*?}*/
+
 
     /*? if forgeLike {*/
-    /*/^? if forge {^/
-    /^@Mod.EventBusSubscriber(modid = ServerRedstoneBlock.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
-     ^//^?}^/
-    /^? if neoforge {^/
-    /^@EventBusSubscriber(modid = ServerRedstoneBlock.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
-    ^//^?}^/
-    public static final class Register {
+    /*? if forge {*/
+    /*@Mod.EventBusSubscriber(modid = ServerRedstoneBlock.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+     *//*?}*/
+    /*? if neoforge && <1.21.5 {*/
+    /*@EventBusSubscriber(modid = ServerRedstoneBlock.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
+    *//*?}*/
+    /*? if <1.21.5 {*/
+    /*public static final class Register {
+        private static RegisterGameTestsEvent event;
+
         @SubscribeEvent
         public static void registerGameTest(RegisterGameTestsEvent event) {
+            Register.event = event;
             LOGGER.info("Registering game tests");
             event.register(E2ETests.class);
         }
     }
     *//*?}*/
+    /*?}*/
 
     private static void placeBlock(TestContext ctx, BlockPos blockPos, Block block) {
         ctx.setBlockState(blockPos.down(), Blocks.DIAMOND_BLOCK.getDefaultState());
@@ -103,25 +136,27 @@ public class E2ETests {
     private static void startTicking(TestContext ctx, BlockPos blockPos) {
         ctx.waitAndRun(1, () -> {
             /*? if forgeLike {*/
-            /*Block testBlock = RegistryHelper.REDSTONE_BLOCK.get();
-             *//*?}*/
+            Block testBlock = RegistryHelper.REDSTONE_BLOCK.get();
+             /*?}*/
 
             /*? if fabric {*/
-            Block testBlock = REDSTONE_BLOCK;
-            /*?}*/
+            /*Block testBlock = REDSTONE_BLOCK;
+            *//*?}*/
             placeBlock(ctx, blockPos, testBlock);
         });
     }
 
-    @GameTest(
-            /*? if neoforge {*//*templateNamespace = MOD_ID,*//*?}*/
-            /*? if >1.21.4 {*/maxTicks = 200/*?}*/
-            /*? if <1.21.5 {*/
-            /*templateName = template,
+    /*? if !(neoforge && 1.21.5) {*/
+    /*@GameTest(
+            /^? if neoforge {^/templateNamespace = MOD_ID,/^?}^/
+            /^? if >1.21.4 {^/maxTicks = 200/^?}^/
+            /^? if <1.21.5 {^/
+            /^templateName = template,
             batchId = "state-test",
             tickLimit = 200
-            *//*?}*/
+            ^//^?}^/
     )
+    *//*?}*/
     public /*? if <1.21.5 {*//*static*//*?}*/ void stateTest(TestContext ctx) {
         BlockPos MAIN_REDSTONE = new BlockPos(2, 2, 2);
         ServerRedstoneBlock.currentState.on();
@@ -150,19 +185,24 @@ public class E2ETests {
         ctx.runAtTick(FOURTH_TICK, () -> {
             assertPower(ctx, MAIN_REDSTONE, 15);
             ServerRedstoneBlock.currentState.on();
-            ctx.complete();
+            /*? if neoforge && =1.21.5 {*/
+            /*?} else {*/
+            /*ctx.complete();
+            *//*?}*/
         });
     }
 
-    @GameTest(
-            /*? if neoforge {*//*templateNamespace = MOD_ID,*//*?}*/
-            /*? if >1.21.4 {*/maxTicks = 200/*?}*/
-            /*? if <1.21.5 {*/
-            /*templateName = template,
+    /*? if !(neoforge && 1.21.5) {*/
+    /*@GameTest(
+            /^? if neoforge {^/templateNamespace = MOD_ID,/^?}^/
+            /^? if >1.21.4 {^/maxTicks = 200/^?}^/
+            /^? if <1.21.5 {^/
+            /^templateName = template,
             batchId = "multi-block",
             tickLimit = 200
-            *//*?}*/
+            ^//^?}^/
     )
+    *//*?}*/
     public /*? if <1.21.5 {*//*static*//*?}*/ void multiBlockStateTest(TestContext ctx) {
         ServerRedstoneBlock.currentState.on();
         final BlockPos first = new BlockPos(0, 2, 0);
@@ -212,20 +252,25 @@ public class E2ETests {
             assertPower(ctx, DUST2, 15);
             assertPower(ctx, DUST3, 15);
             ServerRedstoneBlock.currentState.on();
-            ctx.complete();
+            /*? if neoforge && =1.21.5 {*/
+            /*?} else {*/
+            /*ctx.complete();
+            *//*?}*/
         });
 
     }
 
-    @GameTest(
-            /*? if neoforge {*//*templateNamespace = MOD_ID,*//*?}*/
-            /*? if >1.21.4 {*/maxTicks = 200/*?}*/
-            /*? if <1.21.5 {*/
-            /*templateName = template,
+    /*? if !(neoforge && 1.21.5) {*/
+    /*@GameTest(
+            /^? if neoforge {^/templateNamespace = MOD_ID,/^?}^/
+            /^? if >1.21.4 {^/maxTicks = 200/^?}^/
+            /^? if <1.21.5 {^/
+            /^templateName = template,
             batchId = "directions",
             tickLimit = 200
-            *//*?}*/
+            ^//^?}^/
     )
+    *//*?}*/
     public /*? if <1.21.5 {*//*static*//*?}*/ void directionality(TestContext ctx) {
         final BlockPos MAIN_BLOCK = new BlockPos(2, 2, 2);
         final BlockPos DUST1 = MAIN_BLOCK.east();
@@ -279,16 +324,20 @@ public class E2ETests {
             assertPower(ctx, DUST4, 15);
             ServerRedstoneBlock.currentState.on();
             LOGGER.info("Completing test");
-            ctx.complete();
+            /*? if neoforge && =1.21.5 {*/
+            /*?} else {*/
+            /*ctx.complete();
+            *//*?}*/
+
         });
 
     }
 
-    @GameTest(/*? if neoforge {*//*templateNamespace = MOD_ID*//*?}*/
-            /*? if <1.21.5 {*/
-            /*,templateName = template
-            *//*?}*/
+    /*? if !(neoforge && 1.21.5) {*/
+    /*@GameTest(/^? if neoforge {^/templateNamespace = MOD_ID,/^?}^/
+            /^? if <1.21.5 {^//^templateName = template^//^?}^/
     )
+    *//*?}*/
     public /*? if <1.21.5 {*//*static*//*?}*/ void isRecipePresent(TestContext ctx) {
 
         /*? if >= 1.21.2 {*/
@@ -303,7 +352,10 @@ public class E2ETests {
         *//*?} else {*/
         ctx.assertTrue(recipe.isPresent(), Text.of("Recipe is not present."));
         /*?}*/
-        ctx.complete();
+        /*? if neoforge && =1.21.5 {*/
+        /*?} else {*/
+        /*ctx.complete();
+        *//*?}*/
     }
 
     private static void assertPower(TestContext ctx, BlockPos pos, int expected) {
@@ -315,4 +367,3 @@ public class E2ETests {
         /*?}*/
     }
 }
-/*?}*/

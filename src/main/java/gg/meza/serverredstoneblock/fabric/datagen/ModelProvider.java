@@ -1,24 +1,25 @@
 /*? if fabric {*/
-package gg.meza.serverredstoneblock.fabric.datagen;
+/*package gg.meza.serverredstoneblock.fabric.datagen;
 
 import com.google.gson.JsonObject;
 import gg.meza.serverredstoneblock.ServerPowerState;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-/*? if >=1.21.4 {*/
-import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
+/^? if >=1.21.4 {^/
+/^import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 import net.minecraft.client.data.*;
-/*?} else {*/
-/*import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
+^//^?} else {^/
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.minecraft.data.client.*;
-*//*?}*/
-
-import net.minecraft.client.render.model.json.WeightedVariant;
+/^?}^/
+/^? if >=1.21.5 {^/
+/^import net.minecraft.client.render.model.json.WeightedVariant;
+^//^?}^/
 import net.minecraft.util.Identifier;
 
 import static gg.meza.serverredstoneblock.RedstoneBlock.POWER_STATE;
-/*? if >=1.21.5 {*/
-import static gg.meza.serverredstoneblock.ServerPowerState.*;
-/*?}*/
+/^? if >=1.21.5 {^/
+/^import static gg.meza.serverredstoneblock.ServerPowerState.*;
+^//^?}^/
 import static gg.meza.serverredstoneblock.ServerRedstoneBlock.*;
 import static gg.meza.serverredstoneblock.fabric.RegistryHelper.REDSTONE_BLOCK;
 
@@ -34,8 +35,8 @@ public class ModelProvider extends FabricModelProvider {
         Identifier offBlockId = Identifier.of(MOD_ID, blockName+"_off").withPrefixedPath("block/");
         Identifier warningBlockId = Identifier.of(MOD_ID, blockName+"_warning").withPrefixedPath("block/");
 
-        /*? if <=1.21.4 {*/
-        /*BlockStateVariantMap.SingleProperty<ServerPowerState> variantMap = BlockStateVariantMap.create(POWER_STATE);
+        /^? if <=1.21.4 {^/
+        BlockStateVariantMap.SingleProperty<ServerPowerState> variantMap = BlockStateVariantMap.create(POWER_STATE);
 
         variantMap.register((powerState) -> {
             return switch (powerState) {
@@ -48,15 +49,15 @@ public class ModelProvider extends FabricModelProvider {
         VariantsBlockStateSupplier variantSupplier = VariantsBlockStateSupplier.create(REDSTONE_BLOCK).coordinate(variantMap);
         blockStateModelGenerator.blockStateCollector.accept(variantSupplier);
 
-        *//*?} else {*/
-        VariantsBlockModelDefinitionCreator variants = VariantsBlockModelDefinitionCreator.of(REDSTONE_BLOCK).with(
+        /^?} else {^/
+        /^VariantsBlockModelDefinitionCreator variants = VariantsBlockModelDefinitionCreator.of(REDSTONE_BLOCK).with(
                 BlockStateVariantMap.models(POWER_STATE)
                         .register(ON, BlockStateModelGenerator.createWeightedVariant(mainBlockId))
                         .register(OFF, BlockStateModelGenerator.createWeightedVariant(offBlockId))
                         .register(WARNING, BlockStateModelGenerator.createWeightedVariant(warningBlockId))
         );
         blockStateModelGenerator.blockStateCollector.accept(variants);
-        /*?}*/
+        ^//^?}^/
 
 
         addModelTextureFor(blockStateModelGenerator, mainBlockId, Identifier.of("minecraft", "block/cube_all"));
@@ -81,4 +82,4 @@ public class ModelProvider extends FabricModelProvider {
     }
 }
 
-/*?}*/
+*//*?}*/

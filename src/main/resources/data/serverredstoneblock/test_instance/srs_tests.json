@@ -1,0 +1,12 @@
+{
+  "type": "serverredstoneblock:srs_test_instance",
+  "environment": "minecraft:default",
+  "structure": "serverredstoneblock:empty",
+  "max_ticks": 400,
+  "setup_ticks": 50,
+  "required": true,
+  "max_attempts": 3,
+  "required_successes": 1,
+  "sky_access": false,
+  "manual_only": false
+}

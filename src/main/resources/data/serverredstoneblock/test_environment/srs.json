@@ -1,0 +1,41 @@
+{
+  "type": "minecraft:all_of",
+  "definitions": [
+    "minecraft:default",
+    {
+      "type": "minecraft:game_rules",
+      "bool_rules": [
+        {
+          "rule": "doFireTick",
+          "value": false
+        },
+        {
+          "rule": "doDaylightCycle",
+          "value": false
+        },
+        {
+          "rule": "doWeatherCycle",
+          "value": false
+        },
+        {
+          "rule": "keepInventory",
+          "value": true
+        }
+      ],
+      "int_rules": [
+        {
+          "rule": "playersSleepingPercentage",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "type": "minecraft:weather",
+      "weather": "clear"
+    },
+    {
+      "type": "minecraft:time_of_day",
+      "time": 6000
+    }
+  ]
+}

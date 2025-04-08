@@ -3,22 +3,22 @@
 
 import net.minecraft.advancement.criterion.RecipeUnlockedCriterion;
 /^? if >= 1.21.4 {^/
-/^import net.minecraft.data.DataOutput;
+import net.minecraft.data.DataOutput;
 import net.minecraft.data.recipe.RecipeExporter;
 import net.minecraft.data.recipe.RecipeGenerator;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
-^//^?} else {^/
-import net.minecraft.data.server.recipe.RecipeExporter;
+/^?} else {^/
+/^import net.minecraft.data.server.recipe.RecipeExporter;
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
 import net.minecraft.recipe.book.RecipeCategory;
 
 import java.util.concurrent.CompletableFuture;
 
 import net.minecraft.data.DataOutput;
-/^?}^/
+^//^?}^/
 
 import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
@@ -34,20 +34,20 @@ import static gg.meza.serverredstoneblock.forge.RegistryHelper.REDSTONE_BLOCK;
 
 
 /^? if >= 1.21.4 {^/
-/^public class RecipeProvider extends RecipeGenerator.RecipeProvider implements IConditionBuilder {
+public class RecipeProvider extends RecipeGenerator.RecipeProvider implements IConditionBuilder {
     protected RecipeProvider(DataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
         super(output, registriesFuture);
     }
 
-    ^//^?} else {^/
-public class RecipeProvider extends net.minecraft.data.server.recipe.RecipeProvider implements IConditionBuilder {
-    public RecipeProvider(DataOutput output/^? if >= 1.21 {^/, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookupFuture/^?}^/) {
-        super(output/^? if >= 1.21 {^/, registryLookupFuture/^?}^/);
+    /^?} else {^/
+/^public class RecipeProvider extends net.minecraft.data.server.recipe.RecipeProvider implements IConditionBuilder {
+    public RecipeProvider(DataOutput output/^¹? if >= 1.21 {¹^/, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookupFuture/^¹?}¹^/) {
+        super(output/^¹? if >= 1.21 {¹^/, registryLookupFuture/^¹?}¹^/);
     }
-    /^?}^/
+    ^//^?}^/
 
     /^? if >=1.21.4 {^/
-    /^@Override
+    @Override
     protected RecipeGenerator getRecipeGenerator(RegistryWrapper.WrapperLookup registries, RecipeExporter exporter) {
         return new RecipeGenerator(registries, exporter) {
             @Override
@@ -71,8 +71,8 @@ public class RecipeProvider extends net.minecraft.data.server.recipe.RecipeProvi
     public String getName() {
         return "";
     }
-    ^//^?} else {^/
-    @Override
+    /^?} else {^/
+    /^@Override
     protected void generate(RecipeExporter exporter) {
         ShapedRecipeJsonBuilder.create(RecipeCategory.REDSTONE, REDSTONE_BLOCK.get())
                 .pattern("L")
@@ -83,6 +83,6 @@ public class RecipeProvider extends net.minecraft.data.server.recipe.RecipeProvi
                 .criterion("has_lever", RecipeUnlockedCriterion.create(Identifier.of("minecraft", "lever")))
                 .offerTo(exporter);
     }
-    /^?}^/
+    ^//^?}^/
 }
 *//*?}*/

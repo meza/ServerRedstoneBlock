@@ -1,5 +1,5 @@
 /*? if neoforge && >= 1.21.4 {*/
-/*package gg.meza.serverredstoneblock.neoforge.datagen;
+package gg.meza.serverredstoneblock.neoforge.datagen;
 
 import net.minecraft.advancement.criterion.RecipeUnlockedCriterion;
 import net.minecraft.data.DataOutput;
@@ -49,4 +49,4 @@ public class SRSRecipeProvider extends RecipeGenerator.RecipeProvider {
         return this.getClass().getSimpleName();
     }
 }
-*//*?}*/
+/*?}*/

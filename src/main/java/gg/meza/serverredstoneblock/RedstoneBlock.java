@@ -1,15 +1,11 @@
 package gg.meza.serverredstoneblock;
 
 /*? if >=1.21 {*/
-import com.mojang.serialization.MapCodec;
-/*?}*/
 
-/*? if fabric {*/
-import gg.meza.serverredstoneblock.fabric.RegistryHelper;
-/*?}*/
-/*? if forge {*/
-/*?}*/
-import net.minecraft.block.*;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockRenderType;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;

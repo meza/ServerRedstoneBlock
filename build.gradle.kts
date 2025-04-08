@@ -15,6 +15,15 @@ modSettings {
     }
 }
 
+if (!mod.isNeoforge || stonecutter.eval(stonecutter.current.version, "<1.21.5")) {
+    tasks.named("processResources") {
+        doFirst {
+            (this as ProcessResources).exclude("**/test_instance/**", "**/test_environment/**")
+        }
+    }
+}
+
+
 publishMods {
     modrinth {
         if (mod.isFabric) requires("fabric-api")
@@ -26,8 +35,3 @@ publishMods {
         if (mod.isFabric) requires("fabric-api")
     }
 }
-
-//tasks.named("runClient") {
-//    logger.error("show this error")
-//    throw GradleException("Task execution disrupted and exited.")
-//}

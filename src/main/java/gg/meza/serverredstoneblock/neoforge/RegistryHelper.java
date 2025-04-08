@@ -1,17 +1,19 @@
 /*? if neoforge {*/
 package gg.meza.serverredstoneblock.neoforge;
 
+/*? if >=1.21.5 {*/
 import com.mojang.serialization.MapCodec;
 import gg.meza.serverredstoneblock.E2ETests;
+import net.minecraft.registry.Registries;
+import net.minecraft.test.TestInstance;
+/*?}*/
 import gg.meza.serverredstoneblock.RedstoneBlockItem;
 import gg.meza.serverredstoneblock.ServerRedstoneBlock;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
-import net.minecraft.test.TestInstance;
 import net.minecraft.util.Identifier;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredBlock;

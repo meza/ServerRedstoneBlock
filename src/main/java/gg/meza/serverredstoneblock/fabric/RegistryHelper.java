@@ -4,8 +4,8 @@
 import gg.meza.serverredstoneblock.RedstoneBlockItem;
 import gg.meza.serverredstoneblock.ServerRedstoneBlock;
 /^? if 1.20.2 {^/
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-/^?}^/
+/^import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+^//^?}^/
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
@@ -14,9 +14,9 @@ import net.minecraft.item.ItemGroups;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 /^? if >=1.21.2 {^/
-/^import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
-^//^?}^/
+/^?}^/
 import net.minecraft.util.Identifier;
 
 import static gg.meza.serverredstoneblock.ServerRedstoneBlock.*;
@@ -28,25 +28,25 @@ public class RegistryHelper {
     public static Block registerBlock(String name, Block block, Class<? extends BlockItem> blockItemClass) {
         registerBlockItem(name, block, blockItemClass);
         /^? if <1.21 {^/
-        Identifier id = new Identifier(ServerRedstoneBlock.MOD_ID, name);
-        /^?} else {^/
-        /^Identifier id = Identifier.of(ServerRedstoneBlock.MOD_ID, name);
-         ^//^?}^/
+        /^Identifier id = new Identifier(ServerRedstoneBlock.MOD_ID, name);
+        ^//^?} else {^/
+        Identifier id = Identifier.of(ServerRedstoneBlock.MOD_ID, name);
+         /^?}^/
         return Registry.register(Registries.BLOCK, id, block);
     }
 
     public static Item registerBlockItem(String name, Block block, Class<? extends BlockItem> blockItemClass) {
         /^? if <1.21 {^/
-        Identifier id = new Identifier(ServerRedstoneBlock.MOD_ID, name);
+        /^Identifier id = new Identifier(ServerRedstoneBlock.MOD_ID, name);
         Item.Settings settings = new Item.Settings();
 
-        /^?} else {^/
-        /^Identifier id = Identifier.of(ServerRedstoneBlock.MOD_ID, name);
-        /^¹? if >=1.21.2 {¹^/
-        /^¹RegistryKey<Item> key = RegistryKey.of(RegistryKeys.ITEM, id);
-        ¹^//^¹?}¹^/
-        Item.Settings settings = new Item.Settings()/^¹? if >=1.21.2 {¹^//^¹.registryKey(key).useBlockPrefixedTranslationKey()¹^//^¹?}¹^/;
-        ^//^?}^/
+        ^//^?} else {^/
+        Identifier id = Identifier.of(ServerRedstoneBlock.MOD_ID, name);
+        /^? if >=1.21.2 {^/
+        RegistryKey<Item> key = RegistryKey.of(RegistryKeys.ITEM, id);
+        /^?}^/
+        Item.Settings settings = new Item.Settings()/^? if >=1.21.2 {^/.registryKey(key).useBlockPrefixedTranslationKey()/^?}^/;
+        /^?}^/
         try {
             BlockItem blockItem = blockItemClass.getConstructor(Block.class, Item.Settings.class).newInstance(block, settings);
             return Registry.register(Registries.ITEM, id, blockItem);

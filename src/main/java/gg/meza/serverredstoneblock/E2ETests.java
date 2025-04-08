@@ -18,36 +18,55 @@ import static gg.meza.serverredstoneblock.fabric.RegistryHelper.REDSTONE_BLOCK;
 
 
 /*? if neoforge {*/
-
-/*? if >=1.21.5 {*/
-
+import gg.meza.serverredstoneblock.neoforge.RegistryHelper;
+/*? if <1.21.5 {*/
+/*import net.minecraft.test.GameTest;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.RegisterGameTestsEvent;
+import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+*//*?} else {*/
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import gg.meza.serverredstoneblock.neoforge.RegistryHelper;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.RedstoneWireBlock;
-import net.minecraft.recipe.Recipe;
-import net.minecraft.recipe.RecipeEntry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.test.TestContext;
 import net.minecraft.test.TestData;
 import net.minecraft.test.TestEnvironmentDefinition;
 import net.minecraft.test.TestInstance;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+/*?}*/
+/*?}*/
+
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.RedstoneWireBlock;
+import net.minecraft.recipe.RecipeEntry;
+/*? if >=1.21.4 {*/
+import net.minecraft.recipe.Recipe;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+/*?} else {*/
+/*import net.minecraft.recipe.RecipeManager;
+*//*?}*/
+
+import net.minecraft.test.TestContext;
+
 import net.minecraft.util.math.BlockPos;
+
 
 import java.util.Optional;
 
-import static gg.meza.serverredstoneblock.ServerRedstoneBlock.LOGGER;
-import static gg.meza.serverredstoneblock.ServerRedstoneBlock.MAIN_ID;
+import static gg.meza.serverredstoneblock.ServerRedstoneBlock.*;
 
 
 /*? if forge {*/
-/*import static gg.meza.serverredstoneblock.ServerRedstoneBlock.MOD_ID;
+/*import gg.meza.serverredstoneblock.forge.RegistryHelper;
+import net.minecraftforge.event.RegisterGameTestsEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.gametest.GameTestHolder;
+import net.minecraft.test.GameTest;
+import static gg.meza.serverredstoneblock.ServerRedstoneBlock.MOD_ID;
 
 @GameTestHolder(MOD_ID)
 *//*?}*/
@@ -111,7 +130,7 @@ public class E2ETests /*? if neoforge && >=1.21.5 {*/extends TestInstance/*?}*/ 
     /*@Mod.EventBusSubscriber(modid = ServerRedstoneBlock.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
      *//*?}*/
     /*? if neoforge && <1.21.5 {*/
-    /*@EventBusSubscriber(modid = ServerRedstoneBlock.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
+    /*@EventBusSubscriber(modid = MOD_ID, bus = EventBusSubscriber.Bus.MOD)
     *//*?}*/
     /*? if <1.21.5 {*/
     /*public static final class Register {
@@ -367,3 +386,4 @@ public class E2ETests /*? if neoforge && >=1.21.5 {*/extends TestInstance/*?}*/ 
         /*?}*/
     }
 }
+

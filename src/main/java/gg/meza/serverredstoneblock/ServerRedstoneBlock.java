@@ -20,9 +20,19 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 *//*?}*/
 
 /*? if neoforge {*/
+import gg.meza.serverredstoneblock.neoforge.RegistryHelper;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+/*?}*/
+
+/*? if forgeLike {*/
+import static gg.meza.serverredstoneblock.ServerRedstoneBlock.MOD_ID;
+/*?}*/
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import gg.meza.serverredstoneblock.neoforge.RegistryHelper;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -33,17 +43,13 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.function.Supplier;
 
-import static gg.meza.serverredstoneblock.ServerRedstoneBlock.MOD_ID;
+
 import static net.minecraft.server.command.CommandManager.literal;
 
 /*? if fabric {*/

@@ -1,7 +1,7 @@
 plugins {
     id("dev.kikugie.stonecutter")
     id("dev.architectury.loom") version "1.10.455" apply false
-    id("me.modmuss50.mod-publish-plugin") version "2.0.1" apply false
+    id("me.modmuss50.mod-publish-plugin") version "2.1.0" apply false
 }
 stonecutter active "1.21.4-fabric" /* [SC] DO NOT EDIT */
 stonecutter.automaticPlatformConstants = true

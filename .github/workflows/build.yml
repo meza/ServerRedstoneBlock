@@ -33,7 +33,7 @@ jobs:
             versions/*.properties
             *.properties
             *.gradle.kts
-          java-version: 21
+          java-version: 21.0.13+9.0.LTS
           check-latest: true
           distribution: 'temurin'
 
